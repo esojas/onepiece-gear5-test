@@ -9,10 +9,15 @@ public class PlayerInput : MonoBehaviour
 
     public event Action<Vector2> OnMove;
     public event Action OnJumpPressed;
+    public event Action OnSprintPressed;
+    public event Action OnSprintReleased;
+    public event Action OnGrappleHold;
+    public event Action OnGrappleReleased;
 
     private InputAction moveAction;
     private InputAction jumpAction;
-
+    private InputAction sprintAction;
+    private InputAction grappleAction;
 
     private void OnEnable()
     {
@@ -21,6 +26,10 @@ public class PlayerInput : MonoBehaviour
         moveAction.performed += ctx => OnMove?.Invoke(ctx.ReadValue<Vector2>());
         moveAction.canceled += ctx => OnMove?.Invoke(Vector2.zero);
         jumpAction.performed += ctx => OnJumpPressed?.Invoke();
+        sprintAction.performed += ctx => OnSprintPressed?.Invoke();
+        sprintAction.canceled += ctx => OnSprintReleased?.Invoke();
+        grappleAction.performed += ctx => OnGrappleHold?.Invoke();
+        grappleAction.canceled += ctx => OnGrappleReleased?.Invoke();
     }
 
     private void OnDisable()
@@ -28,6 +37,10 @@ public class PlayerInput : MonoBehaviour
         moveAction.performed -= ctx => OnMove?.Invoke(ctx.ReadValue<Vector2>());
         moveAction.canceled -= ctx => OnMove?.Invoke(Vector2.zero);
         jumpAction.performed -= ctx => OnJumpPressed?.Invoke();
+        sprintAction.performed -= ctx => OnSprintPressed?.Invoke();
+        sprintAction.canceled -= ctx => OnSprintReleased?.Invoke();
+        grappleAction.performed -= ctx => OnGrappleHold?.Invoke();
+        grappleAction.canceled -= ctx => OnGrappleReleased?.Invoke();
 
         inputActions.FindActionMap("Player").Disable();
     }
@@ -36,6 +49,8 @@ public class PlayerInput : MonoBehaviour
     {
         moveAction = InputSystem.actions.FindAction("Move");
         jumpAction = InputSystem.actions.FindAction("Jump");
+        sprintAction = InputSystem.actions.FindAction("Sprint");
+        grappleAction = InputSystem.actions.FindAction("Grapple");
     }
 
 

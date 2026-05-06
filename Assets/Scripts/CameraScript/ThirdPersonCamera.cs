@@ -74,7 +74,7 @@ public class ThirdPersonCamera : MonoBehaviour
 
         transform.eulerAngles = new Vector3(-rotX, transform.eulerAngles.y + y, 0);
 
-        float heightOffset = cameraPosition.position.y - target.position.y;
+        float heightOffset = verticalOffset;
         transform.position = target.position + new Vector3(0, heightOffset, 0) - (transform.forward * targetDistance);
     }
 
