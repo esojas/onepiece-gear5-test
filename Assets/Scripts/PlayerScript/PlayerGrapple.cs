@@ -8,7 +8,9 @@ public class PlayerGrapple : MonoBehaviour
     [SerializeField] private float jointDamper = 7f;
     [SerializeField] private float jointMassScale = 4.5f;
     [SerializeField] private float chargeSpeed = 1f;
-    [SerializeField] private float maximumDischargeAmount = 10f;
+    [SerializeField] private float maximumDischargeAmount = 100f;
+    public float maximumDischarge => maximumDischargeAmount; 
+
     [SerializeField] private LayerMask whatIsGrappable;
     [SerializeField] private Transform cam,player;
     [SerializeField] private Transform linePosition;
@@ -17,6 +19,7 @@ public class PlayerGrapple : MonoBehaviour
     public event Action IsGrappling;
     //public event Action ReleasedHoldGrappling;
     public event Action CancelledGrappling;
+    public event Action<float> OnChargedUpdated;
 
     private bool isGrappling = false;
     private LineRenderer lineRenderer;
@@ -30,12 +33,14 @@ public class PlayerGrapple : MonoBehaviour
     private float rangeDischarge;
     private bool grappledCloserPressed = false;
     private bool grappledFurtherPressed = false;
+    private Rigidbody rb;
 
     private void Awake()
     {
         lineRenderer = GetComponent<LineRenderer>();
         playerGameObject = gameObject;
         playerInput = GetComponent<PlayerInput>();
+        rb = GetComponent<Rigidbody>();
         //playerMovementScript = GetComponent<PlayerMovementScript>();
     }
 
@@ -47,7 +52,7 @@ public class PlayerGrapple : MonoBehaviour
         playerInput.OnGrappledCloser += GrappledCloserPressed;
         playerInput.OnGrappledCloserReleased += GrappledCloserReleased;
         playerInput.OnGrappledFurther += GrappledFurtherPressed;
-        playerInput.OnGrappledFurther += GrappledFurtherReleased;
+        playerInput.OnGrappledFurtherReleased += GrappledFurtherReleased;
     }
 
     private void OnDisable()
@@ -58,7 +63,7 @@ public class PlayerGrapple : MonoBehaviour
         playerInput.OnGrappledCloser -= GrappledCloserPressed;
         playerInput.OnGrappledCloserReleased -= GrappledCloserReleased;
         playerInput.OnGrappledFurther -= GrappledFurtherPressed;
-        playerInput.OnGrappledFurther -= GrappledFurtherReleased;
+        playerInput.OnGrappledFurtherReleased -= GrappledFurtherReleased;
     }
 
     private void InitializeGrappleHold()
@@ -73,6 +78,8 @@ public class PlayerGrapple : MonoBehaviour
             amtDischarge += chargeSpeed * Time.deltaTime;
 
             rangeDischarge = Mathf.Clamp(amtDischarge, 0, maximumDischargeAmount);
+
+            OnChargedUpdated?.Invoke(amtDischarge);
         }
     }
 
@@ -103,7 +110,9 @@ public class PlayerGrapple : MonoBehaviour
             joint.massScale = jointMassScale;
         }
 
+
         amtDischarge = 0;
+        OnChargedUpdated?.Invoke(amtDischarge);
         rangeDischarge = 0;
     }
 
@@ -142,13 +151,13 @@ public class PlayerGrapple : MonoBehaviour
 
     private void GrappledCloserReleased() => grappledCloserPressed = false;
 
-    private void GrappledFurtherPressed() => grappledFurtherPressed = false;
+    private void GrappledFurtherPressed() => grappledFurtherPressed = true;
 
-    private void GrappledFurtherReleased() => grappledFurtherPressed = true;
+    private void GrappledFurtherReleased() => grappledFurtherPressed = false;
 
     private void HandleGrappledCloser()
     {
-        if (grappledCloserPressed)
+        if (grappledCloserPressed && !grappledFurtherPressed)
         {
             joint.maxDistance += -jointMaxDistanceSpeed * Time.deltaTime;
         }
@@ -156,7 +165,7 @@ public class PlayerGrapple : MonoBehaviour
 
     private void HandleGrappledFurther()
     {
-        if (grappledFurtherPressed)
+        if (grappledFurtherPressed && !grappledCloserPressed)
         {
             joint.maxDistance += jointMaxDistanceSpeed * Time.deltaTime;
         }

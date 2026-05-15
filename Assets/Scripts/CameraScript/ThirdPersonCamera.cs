@@ -18,6 +18,9 @@ public class ThirdPersonCamera : MonoBehaviour
     private float rotX;
     [SerializeField] private GameObject playerGameObject;
 
+
+    private bool camLocked = false;
+
     private void Awake()
     {
         Instance = this;
@@ -25,14 +28,24 @@ public class ThirdPersonCamera : MonoBehaviour
 
     void Update()
     {
-        ControlCamera();
+        if (!camLocked)
+        {
+            ControlCamera();
+        }
+        
     }
 
     void Start()
     {
+
+
         //turnSpeed = LocalPlayerSettings.Sensitivity;
         //LocalPlayerSettings.OnSensitivityChanged += OnSensitivityChanged;
     }
+
+    public void UnlockedCam() => camLocked = false;
+
+    public void LockedCam() => camLocked = true;
 
     private void OnSensitivityChanged(float newSensitivity)
     {
