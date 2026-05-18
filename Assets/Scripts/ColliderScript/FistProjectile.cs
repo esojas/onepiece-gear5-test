@@ -7,6 +7,7 @@ using static UnityEditor.PlayerSettings;
 
 public class FistProjectile : MonoBehaviour
 {
+    [SerializeField] private string enemyLayer;
     private bool movingTowardMaxRange = true;
     private Vector3 maxPositionDestination;
     private Transform playerPositionDestination;
@@ -55,10 +56,13 @@ public class FistProjectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        EnemyHealth enemyHealthScript = other.GetComponent<EnemyHealth>();
 
-        enemyHealthScript.TakeDamage(dmgAmount);
+        if (other.gameObject.layer == LayerMask.NameToLayer(enemyLayer))
+        {
+            EnemyHealth enemyHealthScript = other.GetComponent<EnemyHealth>();
 
+            enemyHealthScript.TakeDamage(dmgAmount);
+        }
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

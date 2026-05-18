@@ -3,6 +3,7 @@ using UnityEngine;
 public class KickProjectile : MonoBehaviour
 {
     // Might Change in the future but for now im gonna make it the same as FistProjectile
+    [SerializeField] private string enemyLayer;
     private bool movingTowardMaxRange = true;
     private Vector3 maxPositionDestination;
     private Transform playerPositionDestination;
@@ -51,9 +52,12 @@ public class KickProjectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        EnemyHealth enemyHealthScript = other.GetComponent<EnemyHealth>();
+        if (other.gameObject.layer == LayerMask.NameToLayer(enemyLayer))
+        {
+            EnemyHealth enemyHealthScript = other.GetComponent<EnemyHealth>();
 
-        enemyHealthScript.TakeDamage(dmgAmount);
+            enemyHealthScript.TakeDamage(dmgAmount);
+        }
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

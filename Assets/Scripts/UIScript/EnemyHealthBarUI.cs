@@ -16,9 +16,10 @@ public class EnemyHealthBarUI : MonoBehaviour
         enemyHealthScript.enemyHealthEvent -= UpdateHealthBarUI;
     }
 
-    public void SetMaxHealth(float maxHealth)
+    public void SetMaxHealthUI(float maxHealth)
     {
         healthBar.maxValue = maxHealth;
+        healthBar.value = maxHealth;
     }
 
     private void UpdateHealthBarUI(float health)
@@ -35,7 +36,7 @@ public class EnemyHealthBarUI : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        SetMaxHealth(enemyHealthScript.enemyMaxHealth);
+        SetMaxHealthUI(enemyHealthScript.enemyMaxHealth);
     }
 
     // Update is called once per frame

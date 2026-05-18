@@ -185,11 +185,18 @@ public class PlayerMovementScript : MonoBehaviour
 
     private void HandleRotation()
     {
+        Quaternion target;
         Vector3 flatForward = relativeCameraPosition.forward;
         flatForward.y = 0; 
         flatForward.Normalize();
-
-        Quaternion target = Quaternion.LookRotation(flatForward);
+        if (flatForward != Vector3.zero)
+        {
+            target = Quaternion.LookRotation(flatForward);
+        }
+        else
+        {
+            target = transform.rotation;
+        }
 
         float speed = lookRotationSpeed * Time.deltaTime;
 

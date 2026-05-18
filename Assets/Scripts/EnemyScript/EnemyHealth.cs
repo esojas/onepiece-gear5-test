@@ -12,7 +12,7 @@ public class EnemyHealth : MonoBehaviour
     private void SetMaxHealth()
     {
         enemyCurrentHealth = enemyMaxHealth;
-        enemyHealthEvent?.Invoke(enemyCurrentHealth);
+        enemyHealthEvent?.Invoke(enemyMaxHealth);
     }
 
     public void TakeDamage(float damage)

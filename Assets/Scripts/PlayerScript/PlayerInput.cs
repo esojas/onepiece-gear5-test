@@ -34,6 +34,9 @@ public class PlayerInput : MonoBehaviour
 
     public event Action OnToggleFly;
 
+    public event Action OnPickLightning;
+    public event Action OnThrowLightning;
+
     private InputAction moveAction;
     private InputAction jumpAction;
     private InputAction sprintAction;
@@ -52,6 +55,9 @@ public class PlayerInput : MonoBehaviour
     private InputAction switchDrawingToPlayerAction;
 
     private InputAction toggleFlyAction;
+
+    private InputAction pickLightningAction;
+    private InputAction throwLightningAction;
 
     private Action<InputAction.CallbackContext> onMovePerformed;
     private Action<InputAction.CallbackContext> onMoveCancelled;
@@ -82,15 +88,21 @@ public class PlayerInput : MonoBehaviour
 
     private Action<InputAction.CallbackContext> onToggleFlyPerformed;
 
+    private Action<InputAction.CallbackContext> onPickLightningPerformed;
+    private Action<InputAction.CallbackContext> onThrowLightningPerformed;
+
     private PlayerGrapple playerGrappleScript;
 
     private PlayerDrawingScript playerDrawingScript;
+
+    private PlayerLightningScript playerLightningScript;
 
     private void OnEnable()
     {
         inputActions.FindActionMap("Player").Enable();
         inputActions.FindActionMap("GrappleControl").Disable();
         inputActions.FindActionMap("DrawingControl").Disable();
+        inputActions.FindActionMap("LightningControl").Disable();
         // Base Movement Controls
         moveAction.performed += onMovePerformed;
         moveAction.canceled += onMoveCancelled;
@@ -118,14 +130,20 @@ public class PlayerInput : MonoBehaviour
         switchDrawingToPlayerAction.performed += onSwitchDrawingToPlayerPerformed;
         drawingAction.performed += onDrawingPerformed;
         drawingAction.canceled += onDrawingCancelled;
-
+        // ToggleFly Controls
         toggleFlyAction.performed += onToggleFlyPerformed;
+        // Throw Lightning Controls
+        pickLightningAction.performed += onPickLightningPerformed;
+        throwLightningAction.performed += onThrowLightningPerformed;
 
         playerGrappleScript.CancelledGrappling += GrappleToPlayerControlSwitch;
         playerGrappleScript.IsGrappling += PlayerToGrappleControlSwitch; // I used IsGrappling because the event runs after it detects a wall and simulates the spring.
 
         playerDrawingScript.IsDrawing += PlayerToDrawingControlSwitch;
         playerDrawingScript.CancelledDrawing += DrawingToPlayerControlSwitch;
+
+        playerLightningScript.holdingLightning += PlayerToLightningControlSwitch;
+        playerLightningScript.throwLightning += LightningToPlayerControlSwitch;
     }
 
     private void OnDisable()
@@ -159,21 +177,29 @@ public class PlayerInput : MonoBehaviour
 
         toggleFlyAction.performed -= onToggleFlyPerformed;
 
+        pickLightningAction.performed -= onPickLightningPerformed;
+        throwLightningAction.performed -= onThrowLightningPerformed;
+
         playerGrappleScript.CancelledGrappling -= GrappleToPlayerControlSwitch;
         playerGrappleScript.IsGrappling -= PlayerToGrappleControlSwitch;
 
         playerDrawingScript.IsDrawing -= PlayerToDrawingControlSwitch;
         playerDrawingScript.CancelledDrawing -= DrawingToPlayerControlSwitch;
 
+        playerLightningScript.holdingLightning -= PlayerToLightningControlSwitch;
+        playerLightningScript.throwLightning -= LightningToPlayerControlSwitch;
+
         inputActions.FindActionMap("Player").Disable();
         inputActions.FindActionMap("GrappleControl").Disable();
         inputActions.FindActionMap("DrawingControl").Disable();
+        inputActions.FindActionMap("LightningControl").Disable();
     }
 
     private void Awake()
     {
         playerGrappleScript = GetComponent<PlayerGrapple>();
         playerDrawingScript = GetComponent<PlayerDrawingScript>();
+        playerLightningScript = GetComponent<PlayerLightningScript>();
 
         moveAction = InputSystem.actions.FindAction("Move");
         jumpAction = InputSystem.actions.FindAction("Jump");
@@ -193,6 +219,9 @@ public class PlayerInput : MonoBehaviour
         switchDrawingToPlayerAction = InputSystem.actions.FindAction("FinishDrawing");
 
         toggleFlyAction = InputSystem.actions.FindAction("ToggleFly");
+
+        pickLightningAction = InputSystem.actions.FindAction("GrabLightning");
+        throwLightningAction = InputSystem.actions.FindAction("ThrowLightning");
 
         onMovePerformed = ctx => OnMove?.Invoke(ctx.ReadValue<Vector2>()); 
         onMoveCancelled = ctx => OnMove?.Invoke(Vector2.zero);
@@ -222,6 +251,9 @@ public class PlayerInput : MonoBehaviour
         onSwitchDrawingToPlayerPerformed = ctx => OnSwitchDrawingToPlayerMode?.Invoke();
 
         onToggleFlyPerformed = ctx => OnToggleFly?.Invoke();
+
+        onPickLightningPerformed = ctx => OnPickLightning?.Invoke();
+        onThrowLightningPerformed = ctx => OnThrowLightning?.Invoke();
     }
 
     private void PlayerToGrappleControlSwitch()
@@ -229,6 +261,7 @@ public class PlayerInput : MonoBehaviour
         inputActions.FindActionMap("Player").Disable();
         inputActions.FindActionMap("GrappleControl").Enable();
         inputActions.FindActionMap("DrawingControl").Disable();
+        inputActions.FindActionMap("LightningControl").Disable();
     }
 
     private void GrappleToPlayerControlSwitch()
@@ -236,6 +269,7 @@ public class PlayerInput : MonoBehaviour
         inputActions.FindActionMap("GrappleControl").Disable();
         inputActions.FindActionMap("Player").Enable();
         inputActions.FindActionMap("DrawingControl").Disable();
+        inputActions.FindActionMap("LightningControl").Disable();
     }
 
     private void PlayerToDrawingControlSwitch()
@@ -244,6 +278,7 @@ public class PlayerInput : MonoBehaviour
         inputActions.FindActionMap("Player").Disable();
         inputActions.FindActionMap("GrappleControl").Disable();
         inputActions.FindActionMap("DrawingControl").Enable();
+        inputActions.FindActionMap("LightningControl").Disable();
     }
 
     private void DrawingToPlayerControlSwitch()
@@ -252,6 +287,23 @@ public class PlayerInput : MonoBehaviour
         inputActions.FindActionMap("Player").Enable();
         inputActions.FindActionMap("GrappleControl").Disable();
         inputActions.FindActionMap("DrawingControl").Disable();
+        inputActions.FindActionMap("LightningControl").Disable();
+    }
+
+    private void PlayerToLightningControlSwitch()
+    {
+        inputActions.FindActionMap("Player").Disable();
+        inputActions.FindActionMap("GrappleControl").Disable();
+        inputActions.FindActionMap("DrawingControl").Disable();
+        inputActions.FindActionMap("LightningControl").Enable();
+    }
+
+    private void LightningToPlayerControlSwitch()
+    {
+        inputActions.FindActionMap("GrappleControl").Disable();
+        inputActions.FindActionMap("Player").Enable();
+        inputActions.FindActionMap("DrawingControl").Disable();
+        inputActions.FindActionMap("LightningControl").Disable();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
