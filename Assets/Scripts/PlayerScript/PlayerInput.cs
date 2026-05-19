@@ -37,6 +37,8 @@ public class PlayerInput : MonoBehaviour
     public event Action OnPickLightning;
     public event Action OnThrowLightning;
 
+    public event Action OnToggleGiant;
+
     private InputAction moveAction;
     private InputAction jumpAction;
     private InputAction sprintAction;
@@ -58,6 +60,8 @@ public class PlayerInput : MonoBehaviour
 
     private InputAction pickLightningAction;
     private InputAction throwLightningAction;
+
+    private InputAction toggleGiantAction;
 
     private Action<InputAction.CallbackContext> onMovePerformed;
     private Action<InputAction.CallbackContext> onMoveCancelled;
@@ -90,6 +94,8 @@ public class PlayerInput : MonoBehaviour
 
     private Action<InputAction.CallbackContext> onPickLightningPerformed;
     private Action<InputAction.CallbackContext> onThrowLightningPerformed;
+
+    private Action<InputAction.CallbackContext> onToggleGiantPerformed;
 
     private PlayerGrapple playerGrappleScript;
 
@@ -135,6 +141,8 @@ public class PlayerInput : MonoBehaviour
         // Throw Lightning Controls
         pickLightningAction.performed += onPickLightningPerformed;
         throwLightningAction.performed += onThrowLightningPerformed;
+        // Become Giant Controls
+        toggleGiantAction.performed += onToggleGiantPerformed;
 
         playerGrappleScript.CancelledGrappling += GrappleToPlayerControlSwitch;
         playerGrappleScript.IsGrappling += PlayerToGrappleControlSwitch; // I used IsGrappling because the event runs after it detects a wall and simulates the spring.
@@ -180,6 +188,8 @@ public class PlayerInput : MonoBehaviour
         pickLightningAction.performed -= onPickLightningPerformed;
         throwLightningAction.performed -= onThrowLightningPerformed;
 
+        toggleGiantAction.performed -= onToggleGiantPerformed;
+
         playerGrappleScript.CancelledGrappling -= GrappleToPlayerControlSwitch;
         playerGrappleScript.IsGrappling -= PlayerToGrappleControlSwitch;
 
@@ -223,6 +233,8 @@ public class PlayerInput : MonoBehaviour
         pickLightningAction = InputSystem.actions.FindAction("GrabLightning");
         throwLightningAction = InputSystem.actions.FindAction("ThrowLightning");
 
+        toggleGiantAction = InputSystem.actions.FindAction("LargeAbility");
+
         onMovePerformed = ctx => OnMove?.Invoke(ctx.ReadValue<Vector2>()); 
         onMoveCancelled = ctx => OnMove?.Invoke(Vector2.zero);
         onJumpPerformed = ctx => OnJumpPressed?.Invoke();
@@ -254,6 +266,8 @@ public class PlayerInput : MonoBehaviour
 
         onPickLightningPerformed = ctx => OnPickLightning?.Invoke();
         onThrowLightningPerformed = ctx => OnThrowLightning?.Invoke();
+
+        onToggleGiantPerformed = ctx => OnToggleGiant?.Invoke();
     }
 
     private void PlayerToGrappleControlSwitch()
