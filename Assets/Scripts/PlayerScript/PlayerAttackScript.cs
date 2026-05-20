@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.AI;
@@ -23,6 +24,9 @@ public class PlayerAttackScript : MonoBehaviour
     private float rangeKickDischargeAmt;
 
     private Transform playerTransform;
+
+    public event Action<float> OnFistChargedUpdated;
+    public event Action<float> OnKickChargedUpdated;
 
     private void OnPunchAttackPressed() => punchAttackIsPressed = true;
 
@@ -53,7 +57,18 @@ public class PlayerAttackScript : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        OnFistChargedUpdated?.Invoke(dischargePunchAmt);
+        OnKickChargedUpdated?.Invoke(dischargeKickAmt);
+    }
+
+    public float fistMaximumDischarge()
+    {
+        return punchAttackObject.attackRange;
+    }
+
+    public float kickMaximumDischarge()
+    {
+        return kickAttackObject.attackRange;
     }
 
     // Update is called once per frame
@@ -68,11 +83,15 @@ public class PlayerAttackScript : MonoBehaviour
         {
             dischargePunchAmt += punchAttackObject.attackChargeMultiplier * Time.deltaTime;
 
+            OnFistChargedUpdated?.Invoke(dischargePunchAmt);
+
             rangePunchDischargeAmt = Mathf.Clamp(dischargePunchAmt, 12, punchAttackObject.attackRange);
         }
         if (kickAttackIsPressed)
         {
             dischargeKickAmt += kickAttackObject.attackChargeMultiplier * Time.deltaTime;
+
+            OnKickChargedUpdated?.Invoke(dischargeKickAmt);
 
             rangeKickDischargeAmt = Mathf.Clamp(dischargeKickAmt, 15, kickAttackObject.attackRange);
         }
@@ -106,6 +125,7 @@ public class PlayerAttackScript : MonoBehaviour
         kickProjectTileScript.InitializeKickProjectile(kickAttackObject, targetPos, playerTransform);
 
         dischargeKickAmt = 0;
+        OnKickChargedUpdated?.Invoke(dischargeKickAmt);
         rangeKickDischargeAmt = 0;
     }
 
@@ -121,6 +141,7 @@ public class PlayerAttackScript : MonoBehaviour
         fistProjectTileScript.InitializeFistProjectile(punchAttackObject, targetPos, playerTransform);
 
         dischargePunchAmt = 0;
+        OnFistChargedUpdated?.Invoke(dischargePunchAmt);
         rangePunchDischargeAmt = 0;
     }
 
