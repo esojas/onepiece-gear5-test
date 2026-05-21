@@ -1,38 +1,44 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyAI : MonoBehaviour
+public abstract class EnemyAI : MonoBehaviour
 {
     [SerializeField] private NavMeshAgent agent;
 
     [SerializeField] private Transform player;
 
+    [SerializeField] private EnemyData enemyType;
+
     [SerializeField] LayerMask whatIsGround, whatIsPlayer;
 
     // Patrolling
-    public Vector3 walkPoint;
+    private Vector3 walkPoint;
     bool walkPointSet;
-    public float walkPointRange;
+    private float walkPointRange;
 
     //Attacking
-    public float timeBetweenAttacks;
+    private float timeBetweenAttacks;
     bool alreadyAttacked;
 
     //States
-    public float sightRange, attackRange;
-    public bool playerInSightRange, playerInAttackRange;
+    private float sightRange, attackRange, attackDamage;
+    private bool playerInSightRange, playerInAttackRange;
 
 
     private void Awake()
     {
-        player = GameObject.Find("BeanPlayer").transform;
+        player = GameObject.Find("Bean (Player)").transform;
         agent = GetComponent<NavMeshAgent>();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        sightRange = enemyType.sightRange;
+        attackRange = enemyType.attackRange;
+        walkPointRange = enemyType.walkPointRange;
+        timeBetweenAttacks = enemyType.timeBetweenAttacks;
+        attackDamage = enemyType.attackDamage;
     }
 
     // Update is called once per frame
@@ -93,12 +99,14 @@ public class EnemyAI : MonoBehaviour
         if (!alreadyAttacked)
         {
 
-            // Attack code here
+            Attack(attackDamage);
 
             alreadyAttacked = true;
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
         }
     }
+
+    protected abstract void Attack(float dmgAmount);
 
     private void ResetAttack()
     {

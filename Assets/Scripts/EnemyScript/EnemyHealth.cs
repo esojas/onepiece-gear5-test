@@ -6,8 +6,9 @@ public class EnemyHealth : MonoBehaviour
 {
     public event Action<float> enemyHealthEvent;
     public float enemyMaxHealth;
-    public float enemyCurrentHealth;
+    private float enemyCurrentHealth;
     [SerializeField] private Slider healthBarSlider;
+    [SerializeField] private EnemyData enemyDataObject;
 
     private void SetMaxHealth()
     {
@@ -29,6 +30,8 @@ public class EnemyHealth : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        enemyMaxHealth = enemyDataObject.health;
+
         SetMaxHealth();
     }
 
