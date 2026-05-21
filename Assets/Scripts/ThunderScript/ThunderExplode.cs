@@ -4,6 +4,7 @@ public class ThunderExplode : MonoBehaviour
 {
     [Header("Explosion Settings")]
     [SerializeField] private float radius = 5.0f;
+    [SerializeField] private float explosionDamage = 30.0f;
     [SerializeField] private float power = 10.0f;
     [SerializeField] private float upwardsModifier = 3.0f;
     [SerializeField] private ForceMode forceMode = ForceMode.Force;
@@ -16,7 +17,13 @@ public class ThunderExplode : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer(enemyLayer))
         {
-            other.attachedRigidbody.AddExplosionForce(power,transform.position, radius, upwardsModifier, forceMode);
+            EnemyHealth enemyHealth = other.GetComponent<EnemyHealth>();
+
+            // direction from explosion center to enemy
+            Vector3 direction = (other.transform.position - transform.position).normalized;
+            Vector3 force = direction * power;
+
+            enemyHealth.TakeDamage(explosionDamage, force);
         }
     }
 
