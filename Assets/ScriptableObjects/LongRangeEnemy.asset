@@ -12,12 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f819c932598fd845858a870f5213312, type: 3}
   m_Name: LongRangeEnemy
   m_EditorClassIdentifier: Assembly-CSharp::EnemyTypes
-  enemyType:
-    serializedVersion: 2
-    m_Bits: 1024
   health: 80
   walkPointRange: 5
   timeBetweenAttacks: 1.5
-  sightRange: 20
-  attackRange: 12
+  sightRange: 60
+  attackRange: 15
   attackDamage: 5

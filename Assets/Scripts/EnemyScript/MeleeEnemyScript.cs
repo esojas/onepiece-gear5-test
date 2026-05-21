@@ -2,8 +2,14 @@ using UnityEngine;
 
 public class MeleeEnemyScript : EnemyAI
 {
-    protected override void Attack(float dmgAmount)
+    [SerializeField] private GameObject meleePrefab;
+    [SerializeField] private Transform attackPoint;
+
+    protected override void Attack(float attackDmg)
     {
-        Debug.Log($"MeleeAttack {dmgAmount}");
+        GameObject melee = Instantiate(meleePrefab, attackPoint.position, attackPoint.rotation);
+
+        EnemyMeleeScript meleeScript = melee.GetComponent<EnemyMeleeScript>();
+        meleeScript.InitializeEnemyMeleeScript(attackDmg);
     }
 }

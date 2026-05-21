@@ -16,6 +16,7 @@ public class FistProjectile : MonoBehaviour
     private MeeleeAttack attackPlayerObject;
     private bool objectIsInitilize = false;
     private float damageBonus;
+    private float knockbackAmount;
 
     public void InitializeFistProjectile(MeeleeAttack playerAttackData, Vector3 maxPos, Transform playerPos)
     {
@@ -26,14 +27,10 @@ public class FistProjectile : MonoBehaviour
         dmgAmount = attackPlayerObject.attackAmt;
 
         float distanceTravelled = Vector3.Distance(playerPos.position, maxPos);
-
-        // Get a 0-1 value of how far through the max range it is
         float t = Mathf.InverseLerp(0f, attackPlayerObject.attackRange, distanceTravelled);
 
-        // Map that to a 0-25 bonus
         damageBonus = Mathf.Lerp(0f, 25f, t);
-
-        //Debug.LogError(damageBonus);
+        knockbackAmount = Mathf.Lerp(attackPlayerObject.attackKnockback * 4f, attackPlayerObject.attackKnockback * 15f, t);
     }
 
     private void MoveTowardMaxRange(MeeleeAttack playerAttackData, Vector3 maxPos)
@@ -73,14 +70,9 @@ public class FistProjectile : MonoBehaviour
             EnemyHealth enemyHealthScript = other.GetComponent<EnemyHealth>();
 
             Vector3 direction = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
+            Vector3 finalForce = direction * knockbackAmount;
 
-            Vector3 upForce = new Vector3(0, 2, 0); // for now ill set it like this
-
-            Vector3 finalDirection = direction + upForce;
-
-            other.attachedRigidbody.AddForce(finalDirection * attackPlayerObject.attackKnockback, ForceMode.Impulse);
-
-            enemyHealthScript.TakeDamage(dmgAmount + damageBonus);
+            enemyHealthScript.TakeDamage(dmgAmount + damageBonus, finalForce);
 
             Debug.LogWarning(dmgAmount + damageBonus);
         }

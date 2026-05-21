@@ -463,7 +463,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!114 &139041380
 MonoBehaviour:
@@ -573,6 +573,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 2037669083}
   - {fileID: 1355355928}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -597,6 +598,9 @@ MonoBehaviour:
   whatIsPlayer:
     serializedVersion: 2
     m_Bits: 128
+  bulletPrefab: {fileID: 7277776945364102158, guid: 6d7c8dc9ff5a3ce4f94244c5563b2c4f, type: 3}
+  firePoint: {fileID: 2037669083}
+  playerPos: {fileID: 988544229}
 --- !u!1 &180470990
 GameObject:
   m_ObjectHideFlags: 0
@@ -993,6 +997,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 309429885}
   m_CullTransparentMesh: 1
+--- !u!1 &330175709
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 330175710}
+  m_Layer: 8
+  m_Name: MeleeAttackPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &330175710
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330175709}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 1.72}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 471151773}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -1582,6 +1617,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 330175710}
   - {fileID: 556787029}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1625,7 +1661,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!195 &471151778
 NavMeshAgent:
@@ -1670,6 +1706,8 @@ MonoBehaviour:
   whatIsPlayer:
     serializedVersion: 2
     m_Bits: 128
+  meleePrefab: {fileID: 5454129679071319810, guid: c391ae0f24f5158489031aec0cce6594, type: 3}
+  attackPoint: {fileID: 330175710}
 --- !u!1 &511714867
 GameObject:
   m_ObjectHideFlags: 0
@@ -10170,6 +10208,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ThunderSpawnScript
   lightningInterval: 5
   lightningPrefab: {fileID: 2843805122399463515, guid: 18c23cbba13c78349908b82dc756577d, type: 3}
+--- !u!1 &2037669082
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2037669083}
+  m_Layer: 0
+  m_Name: BulletShootPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2037669083
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2037669082}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 1.45}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 139041385}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2062946442
 GameObject:
   m_ObjectHideFlags: 0
@@ -10497,6 +10566,63 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!1001 &3501090296541982915
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4439046372448625648, guid: c391ae0f24f5158489031aec0cce6594, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -24.63829
+      objectReference: {fileID: 0}
+    - target: {fileID: 4439046372448625648, guid: c391ae0f24f5158489031aec0cce6594, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4439046372448625648, guid: c391ae0f24f5158489031aec0cce6594, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 28.18654
+      objectReference: {fileID: 0}
+    - target: {fileID: 4439046372448625648, guid: c391ae0f24f5158489031aec0cce6594, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4439046372448625648, guid: c391ae0f24f5158489031aec0cce6594, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4439046372448625648, guid: c391ae0f24f5158489031aec0cce6594, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4439046372448625648, guid: c391ae0f24f5158489031aec0cce6594, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4439046372448625648, guid: c391ae0f24f5158489031aec0cce6594, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4439046372448625648, guid: c391ae0f24f5158489031aec0cce6594, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4439046372448625648, guid: c391ae0f24f5158489031aec0cce6594, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5454129679071319810, guid: c391ae0f24f5158489031aec0cce6594, type: 3}
+      propertyPath: m_Name
+      value: MeleeAttackColliderPrefab
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c391ae0f24f5158489031aec0cce6594, type: 3}
 --- !u!1001 &7838868534146742082
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10580,3 +10706,4 @@ SceneRoots:
   - {fileID: 2002292841}
   - {fileID: 136198428}
   - {fileID: 1322927029}
+  - {fileID: 3501090296541982915}

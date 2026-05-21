@@ -12,12 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f819c932598fd845858a870f5213312, type: 3}
   m_Name: CloseRangeEnemy
   m_EditorClassIdentifier: Assembly-CSharp::EnemyTypes
-  enemyType:
-    serializedVersion: 2
-    m_Bits: 256
   health: 120
   walkPointRange: 5
   timeBetweenAttacks: 0.5
-  sightRange: 20
-  attackRange: 4
+  sightRange: 40
+  attackRange: 2
   attackDamage: 2
