@@ -22,7 +22,7 @@ public class EnemyBulletScript : MonoBehaviour
             //playerHealhtScript = other.gameObject.GetComponent<PlayerHealthScript>();
 
             //playerHealthScript.TakeDamage(bulletDmg);
-            Destroy(gameObject, 0.1f);
+            Destroy(gameObject, 0.01f);
         }
     }
 
