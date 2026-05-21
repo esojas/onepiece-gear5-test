@@ -6,7 +6,7 @@ public class EnemyMeleeScript : MonoBehaviour
     [SerializeField] private float meleeLifetime = 2f;
     private float meleeDmg;
     private Rigidbody rb;
-    //private PlayerHealthScript playerHealthScript;
+    private PlayerHealthScript playerHealthScript;
 
     public void InitializeEnemyMeleeScript(float meleeDmgAmount)
     {
@@ -18,9 +18,9 @@ public class EnemyMeleeScript : MonoBehaviour
 
         if (other.gameObject.layer == LayerMask.NameToLayer(playerLayer))
         {
-            //playerHealhtScript = other.gameObject.GetComponent<PlayerHealthScript>();
+            playerHealthScript = other.gameObject.GetComponent<PlayerHealthScript>();
 
-            //playerHealthScript.TakeDamage(bulletDmg);
+            playerHealthScript.TakeDamage(meleeDmg);
         }
         Destroy(gameObject, 0.1f);
     }

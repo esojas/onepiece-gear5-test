@@ -11,6 +11,7 @@ public class EnemyHealth : MonoBehaviour
     private float enemyCurrentHealth;
     [SerializeField] private Slider healthBarSlider;
     [SerializeField] private EnemyData enemyDataObject;
+    [SerializeField] private GameObject enemyDeathVFXPrefab;
 
     private void SetMaxHealth()
     {
@@ -20,11 +21,14 @@ public class EnemyHealth : MonoBehaviour
 
     public void TakeDamage(float damage, Vector3 finalForce)
     {
-        enemyCurrentHealth -= damage;
+
+        enemyCurrentHealth = Mathf.Max(enemyCurrentHealth - damage, 0f);
 
         StartCoroutine(KnockbackPause(finalForce)); // Because u cant mix navmeshagent and physics so just use navmeshagent
 
         enemyHealthEvent?.Invoke(enemyCurrentHealth);
+
+        if (enemyCurrentHealth == 0f) Death();
     }
 
     private IEnumerator KnockbackPause(Vector3 force)
@@ -45,6 +49,14 @@ public class EnemyHealth : MonoBehaviour
             yield return null;
         }
 
+    }
+
+    private void Death()
+    {
+        Instantiate(enemyDeathVFXPrefab, transform.position, Quaternion.identity);
+
+
+        Destroy(gameObject,0.1f);
     }
 
     private void Awake()

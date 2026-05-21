@@ -7,7 +7,7 @@ public class EnemyBulletScript : MonoBehaviour
     [SerializeField] private float bulletLifetime = 10f;
     private float bulletDmg;
     private Rigidbody rb;
-    //private PlayerHealthScript playerHealthScript;
+    private PlayerHealthScript playerHealthScript;
 
 
     public void InitializedEnemyBulletScript(float bulletDmgAmount)
@@ -17,13 +17,14 @@ public class EnemyBulletScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer(playerLayer) || other.gameObject.layer == LayerMask.NameToLayer(groundLayer) || other.gameObject.layer == LayerMask.NameToLayer(wallLayer))
+        if (other.gameObject.layer == LayerMask.NameToLayer(playerLayer))
         {
-            //playerHealhtScript = other.gameObject.GetComponent<PlayerHealthScript>();
+            playerHealthScript = other.gameObject.GetComponent<PlayerHealthScript>();
 
-            //playerHealthScript.TakeDamage(bulletDmg);
+            playerHealthScript.TakeDamage(bulletDmg);
             Destroy(gameObject, 0.01f);
         }
+        Destroy(gameObject, 0.01f);
     }
 
     private void BulletTrajectory()
