@@ -6,8 +6,8 @@ public class ThunderExplode : MonoBehaviour
     [SerializeField] private float radius = 5.0f;
     [SerializeField] private float explosionDamage = 30.0f;
     [SerializeField] private float power = 10.0f;
-    [SerializeField] private float upwardsModifier = 3.0f;
-    [SerializeField] private ForceMode forceMode = ForceMode.Force;
+    //[SerializeField] private float upwardsModifier = 3.0f;
+    //[SerializeField] private ForceMode forceMode = ForceMode.Force;
     [SerializeField] private GameObject thunderExplodeVFXPrefab;
     [SerializeField] private string enemyLayer;
     [SerializeField] private float colliderLifetime = .5f;

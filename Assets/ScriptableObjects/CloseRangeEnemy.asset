@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyTypes
   health: 120
   walkPointRange: 5
-  timeBetweenAttacks: 0.5
+  timeBetweenAttacks: 3
   sightRange: 40
   attackRange: 2
   attackDamage: 2

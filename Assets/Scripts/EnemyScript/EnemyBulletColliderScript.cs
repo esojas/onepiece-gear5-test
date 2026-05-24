@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyBulletScript : MonoBehaviour
+public class EnemyBulletColliderScript : MonoBehaviour
 {
     [SerializeField] private float bulletForce = 4f;
     [SerializeField] private string playerLayer, groundLayer, wallLayer;
@@ -10,7 +10,7 @@ public class EnemyBulletScript : MonoBehaviour
     private PlayerHealthScript playerHealthScript;
 
 
-    public void InitializedEnemyBulletScript(float bulletDmgAmount)
+    public void InitializedEnemyBulletColliderScript(float bulletDmgAmount)
     {
         bulletDmg = bulletDmgAmount;
     }

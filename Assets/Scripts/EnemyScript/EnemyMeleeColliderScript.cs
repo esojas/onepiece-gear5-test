@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyMeleeScript : MonoBehaviour
+public class EnemyMeleeColliderScript : MonoBehaviour
 {
     [SerializeField] private string playerLayer;
     [SerializeField] private float meleeLifetime = 2f;
@@ -8,7 +8,7 @@ public class EnemyMeleeScript : MonoBehaviour
     private Rigidbody rb;
     private PlayerHealthScript playerHealthScript;
 
-    public void InitializeEnemyMeleeScript(float meleeDmgAmount)
+    public void InitializeEnemyMeleeColliderScript(float meleeDmgAmount)
     {
         meleeDmg = meleeDmgAmount;
     }

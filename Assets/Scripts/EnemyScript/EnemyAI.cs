@@ -12,6 +12,10 @@ public abstract class EnemyAI : MonoBehaviour
 
     [SerializeField] LayerMask whatIsGround, whatIsPlayer;
 
+    private AnimationScript animationScript;
+    private string currentAnimation;
+    protected bool isAttacking = false;
+
     // Patrolling
     private Vector3 walkPoint;
     bool walkPointSet;
@@ -25,11 +29,16 @@ public abstract class EnemyAI : MonoBehaviour
     private float sightRange, attackRange, attackDamage;
     private bool playerInSightRange, playerInAttackRange;
 
+    //Idle
+    private float idleTime = 2f;        
+    private float idleTimer = 0f;
+    private bool isIdling = false;
 
     private void Awake()
     {
         player = GameObject.Find("Bean (Player)").transform;
         agent = GetComponent<NavMeshAgent>();
+        animationScript = GetComponent<AnimationScript>();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -42,21 +51,73 @@ public abstract class EnemyAI : MonoBehaviour
         attackDamage = enemyType.attackDamage;
     }
 
+    private void OnEnable()
+    {
+        animationScript.CurrentAnimationEvent += SetAnimation;
+    }
+
+    private void OnDisable()
+    {
+        animationScript.CurrentAnimationEvent -= SetAnimation;
+    }
+
     // Update is called once per frame
     void Update()
     {
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
 
-        if (!playerInSightRange && !playerInAttackRange) Patrolling();
+        CheckAnimation();
+        TrackPlayer();
 
-        if (playerInSightRange && !playerInAttackRange) ChasePlayer();
-
+        if (!playerInSightRange && !playerInAttackRange)
+        {
+            OnPlayerLeftRange();
+            Patrolling();
+        }
+        if (playerInSightRange && !playerInAttackRange)
+        {
+            OnPlayerLeftRange();
+            ChasePlayer();
+        }
         if (playerInSightRange && playerInAttackRange) AttackPlayer();
+    }
+
+    private void SetAnimation(string animation)
+    {
+        currentAnimation = animation;
+        if (animation == "enemy_idle" || animation == "enemy_walk")
+        {
+            isAttacking = false;
+        }
+    } 
+
+    private void CheckAnimation()
+    {
+        if (isAttacking) return;
+
+        if (agent.velocity.magnitude > 0.1f)
+        {
+            animationScript.ChangeAnimation("enemy_walk");
+        }
+        else
+        {
+            animationScript.ChangeAnimation("enemy_idle");
+        }
     }
 
     private void Patrolling()
     {
+        if (isIdling)
+        {
+            idleTimer -= Time.deltaTime;
+            if (idleTimer <= 0f)
+            {
+                isIdling = false;
+            }
+            return; 
+        }
+
         if (!walkPointSet) SearchWalkPoint();
 
         if (walkPointSet)
@@ -66,9 +127,11 @@ public abstract class EnemyAI : MonoBehaviour
 
         Vector3 distanceToWalkPoint = transform.position - walkPoint;
 
-        if(distanceToWalkPoint.magnitude < 1f)
+        if (distanceToWalkPoint.magnitude < 1f)
         {
             walkPointSet = false;
+            isIdling = true;            
+            idleTimer = idleTime;        
         }
     }
 
@@ -100,15 +163,18 @@ public abstract class EnemyAI : MonoBehaviour
 
         if (!alreadyAttacked)
         {
-
-            Attack(attackDamage);
+            Attack(attackDamage, animationScript);
 
             alreadyAttacked = true;
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
         }
     }
 
-    protected abstract void Attack(float dmgAmount);
+    protected abstract void Attack(float dmgAmount, AnimationScript animation);
+
+    protected virtual void OnPlayerLeftRange() { }
+
+    protected virtual void TrackPlayer() { }
 
     private void ResetAttack()
     {
