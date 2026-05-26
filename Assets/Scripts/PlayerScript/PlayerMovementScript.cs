@@ -41,11 +41,14 @@ public class PlayerMovementScript : MonoBehaviour
     private PlayerDrawingScript playerDrawingScript;
     private bool isDrawing = false;
 
-    private AnimationScript animationScript;
-    private string currentAnimation;
     protected bool isAttacking = false;
-
+    private bool isGrounded = false;
     private bool isJumping = false;
+
+    public bool IsJumping => isJumping;
+    public bool IsGrounded => isGrounded;
+    public bool IsSprinting => isPlayerSprinting;
+    public bool IsFlying => toggleFly;
 
     void Awake()
     {
@@ -55,7 +58,6 @@ public class PlayerMovementScript : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         playerInput = GetComponent<PlayerInput>();
         playerDrawingScript = GetComponent<PlayerDrawingScript>();
-        animationScript = GetComponent<AnimationScript>();
     }
 
     private void Start()
@@ -79,8 +81,7 @@ public class PlayerMovementScript : MonoBehaviour
         {
             HandleRotation();
         }
-        IsGrounded();
-        CheckAnimation();
+        isGrounded = IsPlayerGrounded();
     }
 
     private void OnEnable()
@@ -100,7 +101,6 @@ public class PlayerMovementScript : MonoBehaviour
 
         playerInput.OnToggleFly += ToggleFly;
 
-        animationScript.CurrentAnimationEvent += SetAnimation;
     }
 
     private void OnDisable()
@@ -118,41 +118,6 @@ public class PlayerMovementScript : MonoBehaviour
         playerDrawingScript.CancelledDrawing -= StoppedDrawing;
 
         playerInput.OnToggleFly -= ToggleFly;
-
-        animationScript.CurrentAnimationEvent -= SetAnimation;
-    }
-
-    private void SetAnimation(string animation)
-    {
-        currentAnimation = animation;
-        if (animation == "luffy_idle" || animation == "luffy_walk")
-        {
-            isAttacking = false;
-        }
-    }
-
-    private void CheckAnimation()
-    {
-        if (isAttacking) return;
-
-        if (!IsGrounded() && !toggleFly && !isJumping)
-        {
-            animationScript.ChangeAnimation("luffy_jumpHold", .2f);
-            return;
-        }
-
-        if (isPlayerSprinting)
-        {
-            animationScript.ChangeAnimation("luffy_run", .1f);
-        }
-        else if (rb.linearVelocity.magnitude > 0.1f)
-        {
-            animationScript.ChangeAnimation("luffy_walk", .1f);
-        }
-        else
-        {
-            animationScript.ChangeAnimation("luffy_idle");
-        }
     }
 
     private void ToggleFly()
@@ -202,24 +167,24 @@ public class PlayerMovementScript : MonoBehaviour
     private void OnJumpPressed()
     {
         spacedHold = true;
-        if (!toggleFly && IsGrounded())
+        if (!toggleFly && isGrounded)
         {
             isJumping = true;
             rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
         }
     }
 
-    private bool IsGrounded()
+    private bool IsPlayerGrounded()
     {
         Vector3 feetPosition = transform.position + new Vector3(0,.5f,0);// Put negative point in the y since the feet position is just right between the ground so gotta make it abit higher for it to detect
 
         Debug.DrawRay(feetPosition, Vector3.down * distanceFromGround, Color.red);
 
-        bool isGrounded = Physics.SphereCast(feetPosition, 0.3f, Vector3.down, out _, distanceFromGround, groundLayer);
+        bool isTouchingGround = Physics.SphereCast(feetPosition, 0.3f, Vector3.down, out _, distanceFromGround, groundLayer);
 
-        if(isGrounded) isJumping = false;
+        if(isTouchingGround) isJumping = false;
 
-        return isGrounded;
+        return isTouchingGround;
     }
 
     private void OnJumpReleased()

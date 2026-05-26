@@ -4783,7 +4783,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6226211936786668059, guid: edba4598545dd4642abdf23029ba25a8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 2.88
       objectReference: {fileID: 0}
     - target: {fileID: 6226211936786668059, guid: edba4598545dd4642abdf23029ba25a8, type: 3}
       propertyPath: m_LocalPosition.z
@@ -16131,6 +16131,7 @@ GameObject:
   - component: {fileID: 919132148962719368}
   - component: {fileID: 919132148962719377}
   - component: {fileID: 919132148962719379}
+  - component: {fileID: 919132148962719380}
   - component: {fileID: 919132148962719378}
   m_Layer: 7
   m_Name: luffy-model (Player)
@@ -16486,6 +16487,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimationScript
   animatorController: {fileID: 919132148962719378}
+--- !u!114 &919132148962719380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132148962719366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30839493d79d9b542b612a740f910160, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimationScript
 --- !u!1 &926768813983880315
 GameObject:
   m_ObjectHideFlags: 0
@@ -19524,7 +19537,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6226211936786668059, guid: f8fc7100fc3671841a26c50af4c243a6, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 2.29
       objectReference: {fileID: 0}
     - target: {fileID: 6226211936786668059, guid: f8fc7100fc3671841a26c50af4c243a6, type: 3}
       propertyPath: m_LocalPosition.z

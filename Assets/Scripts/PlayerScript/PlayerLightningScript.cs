@@ -20,11 +20,15 @@ public class PlayerLightningScript : MonoBehaviour
 
     GameObject lightningRod;
     ThunderRodScript thunderRodScript;
+    AnimationScript animationScript;
+    PlayerMovementScript playerMovementScript;
 
     private void Awake()
     {
+        playerMovementScript = GetComponent<PlayerMovementScript>();
         playerInput = GetComponent<PlayerInput>();
         rb = GetComponent<Rigidbody>();
+        animationScript = GetComponent<AnimationScript>();
     }
 
     private void OnEnable()
@@ -46,6 +50,7 @@ public class PlayerLightningScript : MonoBehaviour
         if (Physics.Raycast(cam.position, cam.forward, out hit, distanceToHoldLightning, lightning))
         {
             Destroy(hit.collider.gameObject);
+            animationScript.ChangeAnimation("luffy_takeLightning", .5f);
             HoldLightningRod();
         }
 
@@ -66,6 +71,8 @@ public class PlayerLightningScript : MonoBehaviour
     private void ThrowLightningRodInput()
     {
         throwLightning?.Invoke();
+
+        animationScript.ChangeAnimation("luffy_throwLightning", .5f);
 
         rb.useGravity = true;
 
