@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
 using static UnityEngine.GraphicsBuffer;
 
 public class PlayerMovementScript : MonoBehaviour
@@ -14,7 +15,8 @@ public class PlayerMovementScript : MonoBehaviour
     [SerializeField] private float lookRotationSpeed = 3f;
     [SerializeField] private float flightDuration = 7f;
     [SerializeField] private float flightCooldown = 7f;
-
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private float distanceFromGround = .5f;
 
     private bool toggleFly = false;
     private bool canFly = false;
@@ -39,16 +41,12 @@ public class PlayerMovementScript : MonoBehaviour
     private PlayerDrawingScript playerDrawingScript;
     private bool isDrawing = false;
 
-    private void Start()
-    {
-        //for now
-        Cursor.lockState = CursorLockMode.Locked;
-        cameraPosition = GetComponent<Transform>();
-        ThirdPersonCamera.Instance.SetCameraTarget(cameraPosition);
-        relativeCameraPosition = ThirdPersonCamera.Instance.ReturnRelativeCamPos();
-    }
+    private AnimationScript animationScript;
+    private string currentAnimation;
+    protected bool isAttacking = false;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private bool isJumping = false;
+
     void Awake()
     {
         canFly = true;
@@ -57,6 +55,32 @@ public class PlayerMovementScript : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         playerInput = GetComponent<PlayerInput>();
         playerDrawingScript = GetComponent<PlayerDrawingScript>();
+        animationScript = GetComponent<AnimationScript>();
+    }
+
+    private void Start()
+    {
+        //for now
+        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+        cameraPosition = GetComponent<Transform>();
+        ThirdPersonCamera.Instance.SetCameraTarget(cameraPosition);
+        relativeCameraPosition = ThirdPersonCamera.Instance.ReturnRelativeCamPos();
+    }
+
+    void FixedUpdate()
+    {
+        HandleFlightMovement();
+        HandleMoveDirAndMoveSpeed();
+    }
+
+    private void Update()
+    {
+        if (!isDrawing) // Make it so that the model doesnt also rotate during the drawing mode.
+        {
+            HandleRotation();
+        }
+        IsGrounded();
+        CheckAnimation();
     }
 
     private void OnEnable()
@@ -75,6 +99,8 @@ public class PlayerMovementScript : MonoBehaviour
         playerDrawingScript.CancelledDrawing += StoppedDrawing;
 
         playerInput.OnToggleFly += ToggleFly;
+
+        animationScript.CurrentAnimationEvent += SetAnimation;
     }
 
     private void OnDisable()
@@ -90,6 +116,43 @@ public class PlayerMovementScript : MonoBehaviour
 
         playerDrawingScript.IsDrawing -= IsCurrentlyDrawing;
         playerDrawingScript.CancelledDrawing -= StoppedDrawing;
+
+        playerInput.OnToggleFly -= ToggleFly;
+
+        animationScript.CurrentAnimationEvent -= SetAnimation;
+    }
+
+    private void SetAnimation(string animation)
+    {
+        currentAnimation = animation;
+        if (animation == "luffy_idle" || animation == "luffy_walk")
+        {
+            isAttacking = false;
+        }
+    }
+
+    private void CheckAnimation()
+    {
+        if (isAttacking) return;
+
+        if (!IsGrounded() && !toggleFly && !isJumping)
+        {
+            animationScript.ChangeAnimation("luffy_jumpHold", .2f);
+            return;
+        }
+
+        if (isPlayerSprinting)
+        {
+            animationScript.ChangeAnimation("luffy_run", .1f);
+        }
+        else if (rb.linearVelocity.magnitude > 0.1f)
+        {
+            animationScript.ChangeAnimation("luffy_walk", .1f);
+        }
+        else
+        {
+            animationScript.ChangeAnimation("luffy_idle");
+        }
     }
 
     private void ToggleFly()
@@ -139,10 +202,24 @@ public class PlayerMovementScript : MonoBehaviour
     private void OnJumpPressed()
     {
         spacedHold = true;
-        if (!toggleFly)
+        if (!toggleFly && IsGrounded())
         {
+            isJumping = true;
             rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
         }
+    }
+
+    private bool IsGrounded()
+    {
+        Vector3 feetPosition = transform.position + new Vector3(0,.5f,0);// Put negative point in the y since the feet position is just right between the ground so gotta make it abit higher for it to detect
+
+        Debug.DrawRay(feetPosition, Vector3.down * distanceFromGround, Color.red);
+
+        bool isGrounded = Physics.SphereCast(feetPosition, 0.3f, Vector3.down, out _, distanceFromGround, groundLayer);
+
+        if(isGrounded) isJumping = false;
+
+        return isGrounded;
     }
 
     private void OnJumpReleased()
@@ -255,21 +332,5 @@ public class PlayerMovementScript : MonoBehaviour
         }
 
         interpolateMovementSpeed = fastInterpolateSpeed;
-    }
-
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-        HandleFlightMovement();
-        HandleMoveDirAndMoveSpeed();
-    }
-
-    private void Update()
-    {
-        if (!isDrawing) // Make it so that the model doesnt also rotate during the drawing mode.
-        {
-            HandleRotation();
-        }
-
     }
 }

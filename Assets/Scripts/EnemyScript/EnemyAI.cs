@@ -36,7 +36,7 @@ public abstract class EnemyAI : MonoBehaviour
 
     private void Awake()
     {
-        player = GameObject.Find("Bean (Player)").transform;
+        player = GameObject.Find("luffy-model (Player)").transform;
         agent = GetComponent<NavMeshAgent>();
         animationScript = GetComponent<AnimationScript>();
     }
@@ -68,7 +68,7 @@ public abstract class EnemyAI : MonoBehaviour
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
 
         CheckAnimation();
-        TrackPlayer();
+        if(player != null) TrackPlayer(player);
 
         if (!playerInSightRange && !playerInAttackRange)
         {
@@ -174,7 +174,7 @@ public abstract class EnemyAI : MonoBehaviour
 
     protected virtual void OnPlayerLeftRange() { }
 
-    protected virtual void TrackPlayer() { }
+    protected virtual void TrackPlayer(Transform player) { }
 
     private void ResetAttack()
     {

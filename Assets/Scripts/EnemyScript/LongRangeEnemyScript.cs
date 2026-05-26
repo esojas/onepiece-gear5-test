@@ -6,17 +6,19 @@ public class LongRangeEnemyScript: EnemyAI
 {
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Transform firePoint;
-    [SerializeField] private Transform playerPos; // get player rotation
+
     AnimationScript animationScriptController;
     private float pendingDamage;
     private bool hasPreppedShot = false;
 
 
-    protected override void TrackPlayer()
+    protected override void TrackPlayer(Transform player)
     {
+        Vector3 newPos = player.transform.position + new Vector3(0,1,0);
+
         if (isAttacking)
         {
-            firePoint.LookAt(playerPos); 
+            firePoint.LookAt(newPos); 
         }
     }
 
