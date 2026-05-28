@@ -8,8 +8,6 @@ public class PlayerAnimationScript : MonoBehaviour
     protected bool isAttacking = false;
     PlayerMovementScript playerMovementScript;
     AnimationScript animationScript;
-    [SerializeField] private GameObject leftHand;
-    [SerializeField] private GameObject rightHand;
 
     private void Awake()
     {
@@ -71,11 +69,6 @@ public class PlayerAnimationScript : MonoBehaviour
         isAttacking = value;
     }
 
-    public void MoveFistRig()
-    {
-        
-    }
-
     void Start()
     {
         
@@ -84,6 +77,11 @@ public class PlayerAnimationScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            BounceReceiver b = FindObjectOfType<BounceReceiver>();
+            b.Bounce(transform.position, Vector3.up);
+        }
         CheckAnimation();
     }
 }
