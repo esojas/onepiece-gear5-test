@@ -16,5 +16,5 @@ MonoBehaviour:
   attackSpeed: 30
   attackRange: 50
   attackKnockback: 4
-  attackCooldown: 0.5
+  attackCooldown: 0.1
   attackChargeMultiplier: 12
