@@ -8,6 +8,8 @@ public class PlayerAnimationScript : MonoBehaviour
     protected bool isAttacking = false;
     PlayerMovementScript playerMovementScript;
     AnimationScript animationScript;
+    [SerializeField] private GameObject leftHand;
+    [SerializeField] private GameObject rightHand;
 
     private void Awake()
     {
@@ -62,6 +64,16 @@ public class PlayerAnimationScript : MonoBehaviour
         {
             animationScript.ChangeAnimation("luffy_idle");
         }
+    }
+
+    public void SetAttacking(bool value)
+    {
+        isAttacking = value;
+    }
+
+    public void MoveFistRig()
+    {
+        
     }
 
     void Start()

@@ -1,3 +1,5 @@
+using System;
+using UnityEditor;
 using UnityEngine;
 
 public class KickProjectile : MonoBehaviour
@@ -13,8 +15,11 @@ public class KickProjectile : MonoBehaviour
     private bool objectIsInitilize = false;
     private float damageBonus;
     private float knockbackAmount;
+    private Transform feetTarget;
+    private Transform feetMesh;
+    public event Action OnKickDestroyed;
 
-    public void InitializeKickProjectile(MeeleeAttack playerAttackData, Vector3 maxPos, Transform playerPos)
+    public void InitializeKickProjectile(MeeleeAttack playerAttackData, Vector3 maxPos, Transform playerPos, Transform feetIKTarget, Transform feet)
     {
         attackPlayerObject = playerAttackData;
         maxPositionDestination = maxPos;
@@ -27,6 +32,10 @@ public class KickProjectile : MonoBehaviour
 
         damageBonus = Mathf.Lerp(0f, 25f, t);
         knockbackAmount = Mathf.Lerp(attackPlayerObject.attackKnockback * 4f, attackPlayerObject.attackKnockback * 15f, t);
+
+        feetTarget = feetIKTarget;
+        //feetTarget.rotation = Quaternion.Euler(0f, -77.9f, 0f);
+        feetMesh = feet;
     }
 
     private void MoveTowardMaxRange(MeeleeAttack playerAttackData, Vector3 maxPos)
@@ -34,6 +43,8 @@ public class KickProjectile : MonoBehaviour
         float speed = playerAttackData.attackSpeed * Time.deltaTime;
 
         transform.position = Vector3.MoveTowards(transform.position, maxPos, speed);
+
+        feetTarget.position = transform.position;
 
         if (transform.position == maxPos)
         {
@@ -47,6 +58,8 @@ public class KickProjectile : MonoBehaviour
 
         transform.position = Vector3.MoveTowards(transform.position, playerPos.position, speed);
 
+        feetTarget.position = transform.position;
+
         if (transform.position == playerPos.position)
         {
             Invoke("Destroy", .05f);
@@ -55,6 +68,7 @@ public class KickProjectile : MonoBehaviour
 
     private void Destroy()
     {
+        OnKickDestroyed?.Invoke();
         Destroy(gameObject);
     }
 
@@ -88,5 +102,12 @@ public class KickProjectile : MonoBehaviour
         {
             MoveBackToOrigin(attackPlayerObject, playerPositionDestination);
         }
+    }
+
+    private void LateUpdate()
+    {
+        if (!objectIsInitilize) return;
+
+        feetMesh.position = transform.position;
     }
 }

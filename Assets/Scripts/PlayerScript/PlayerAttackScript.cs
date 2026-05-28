@@ -2,11 +2,26 @@ using System;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Animations.Rigging;
 
 public class PlayerAttackScript : MonoBehaviour
 {
     [SerializeField] MeeleeAttack punchAttackObject;
     [SerializeField] MeeleeAttack kickAttackObject;
+
+    [SerializeField] private ChainIKConstraint rightHandIK;
+    [SerializeField] private ChainIKConstraint leftHandIK;
+    private Transform rightHandIKTarget;
+    private Transform leftHandIKTarget;
+    private Transform rightPalmArmBone;
+    private Transform leftPalmArmBone;
+
+    [SerializeField] private ChainIKConstraint rightLegIK;
+    [SerializeField] private ChainIKConstraint leftLegIK;
+    private Transform rightLegIKTarget;
+    private Transform leftLegIKTarget;
+    private Transform rightFeetBone;
+    private Transform leftFeetBone;
 
     private PlayerInput playerInput;
 
@@ -28,9 +43,26 @@ public class PlayerAttackScript : MonoBehaviour
     public event Action<float> OnFistChargedUpdated;
     public event Action<float> OnKickChargedUpdated;
 
-    private void OnPunchAttackPressed() => punchAttackIsPressed = true;
+    private PlayerAnimationScript playerAnimationScript;
+    private AnimationScript animationScript;
 
-    private void OnKickAttackPressed() => kickAttackIsPressed = true;
+    private void OnPunchAttackPressed()
+    {
+        if (punchCooldownTimer > 0) return; 
+        punchAttackIsPressed = true;
+    }
+
+    private void OnKickAttackPressed()
+    {
+        if (kickCooldownTimer > 0) return; 
+        kickAttackIsPressed = true;
+    } 
+
+    private bool initiatePunchAttackHold = false;
+    private bool initiateKickAttackHold = false;
+
+    private float punchCooldownTimer = 0f;
+    private float kickCooldownTimer = 0f;
 
     private void OnEnable()
     {
@@ -52,6 +84,9 @@ public class PlayerAttackScript : MonoBehaviour
     {
         playerInput = GetComponent<PlayerInput>();
         playerTransform = transform;
+        playerAnimationScript = GetComponent<PlayerAnimationScript>();
+        animationScript = GetComponent<AnimationScript>();
+
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -59,6 +94,31 @@ public class PlayerAttackScript : MonoBehaviour
     {
         OnFistChargedUpdated?.Invoke(dischargePunchAmt);
         OnKickChargedUpdated?.Invoke(dischargeKickAmt);
+        // Hands
+        rightHandIK = GameObject.Find("Right Hand IK").GetComponent<ChainIKConstraint>();
+        leftHandIK = GameObject.Find("Left Hand IK").GetComponent<ChainIKConstraint>();
+        // Only enable them when the punch animation is executed.
+        rightHandIK.weight = 0f;
+        leftHandIK.weight = 0f;
+
+        rightHandIKTarget = rightHandIK.transform.GetChild(0); 
+        leftHandIKTarget = leftHandIK.transform.GetChild(0);
+
+        rightPalmArmBone = GameObject.Find("DEF-hand.R").transform;
+        leftPalmArmBone = GameObject.Find("DEF-hand.L").transform;
+        // Legs
+        rightLegIK = GameObject.Find("Right Leg IK").GetComponent<ChainIKConstraint>();
+        leftLegIK = GameObject.Find("Left Leg IK").GetComponent<ChainIKConstraint>();
+        // Only enable them when the punch animation is executed.
+        rightLegIK.weight = 0f;
+        leftLegIK.weight = 0f;
+
+        rightLegIKTarget = rightLegIK.transform.GetChild(0);
+        leftLegIKTarget = leftLegIK.transform.GetChild(0);
+
+        rightFeetBone = GameObject.Find("DEF-toe.R").transform;
+        leftFeetBone = GameObject.Find("DEF-toe.L").transform;
+
     }
 
     public float fistMaximumDischarge()
@@ -74,12 +134,16 @@ public class PlayerAttackScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (punchCooldownTimer > 0) punchCooldownTimer -= Time.deltaTime; 
+        if (kickCooldownTimer > 0) kickCooldownTimer -= Time.deltaTime;
+
         HandleChargedAttack();
+        HandleInitiateAttackAnimation();
     }
 
     private void HandleChargedAttack()
     {
-        if (punchAttackIsPressed)
+        if (punchAttackIsPressed )
         {
             dischargePunchAmt += punchAttackObject.attackChargeMultiplier * Time.deltaTime;
 
@@ -97,52 +161,147 @@ public class PlayerAttackScript : MonoBehaviour
         }
     }
 
+    private void HandleInitiateAttackAnimation()
+    {
+        if(dischargePunchAmt > 5f && !initiatePunchAttackHold)
+        {
+            initiatePunchAttackHold = true;
+            playerAnimationScript.SetAttacking(true);
+            animationScript.ChangeAnimation("luffy_initiateChargingAttack", .2f);
+        }
+        if (dischargeKickAmt > 5f && !initiateKickAttackHold)
+        {
+            initiateKickAttackHold = true;
+            playerAnimationScript.SetAttacking(true);
+            animationScript.ChangeAnimation("luffy_initiateChargingKickAttack", .2f);
+        }
+    }
+
     private void OnKickAttackReleased()
     {
+        if (!kickAttackIsPressed) return; // was blocked by cooldown, do nothing
         kickAttackIsPressed = false;
-        if (!kickAttackIsPressed)
-        {
-            HandleKickAttack();
-        }
+        HandleKickAttack();
     }
 
     private void OnPunchAttackReleased()
     {
+        if (!punchAttackIsPressed) return; // was blocked by cooldown, do nothing
         punchAttackIsPressed = false;
-        if (!punchAttackIsPressed)
-        {
-            HandlePunchAttack();
-        }
+        HandlePunchAttack();
     }
 
     private void HandleKickAttack()
     {
+        Debug.Log($"{dischargeKickAmt} is the discharge kick amount");
+
         GameObject kickPrefab = Instantiate(kickAttackGameObject, originKickAttack.position, cam.rotation);
         KickProjectile kickProjectTileScript = kickPrefab.GetComponent<KickProjectile>();
 
         Vector3 targetPos = cam.position + (rangeKickDischargeAmt * cam.forward);
 
-        kickProjectTileScript.InitializeKickProjectile(kickAttackObject, targetPos, playerTransform);
+        int rand = UnityEngine.Random.Range(0, 2);
+
+        if (dischargeKickAmt <= 5f)
+        {
+            playerAnimationScript.SetAttacking(true);
+            if (rand == 0)
+            {
+                animationScript.ChangeAnimation("luffy_releaseKickAttack", .01f); // right hand
+                rightLegIK.weight = 1f;
+                leftLegIK.weight = 0f;
+            }
+            else
+            {
+                animationScript.ChangeAnimation("luffy_releaseKickAttack02", .01f); // left hand
+                rightLegIK.weight = 0f;
+                leftLegIK.weight = 1f;
+            }
+        }
+        else
+        {
+            playerAnimationScript.SetAttacking(true);
+            animationScript.ChangeAnimation("luffy_releaseKickAttack", .001f);
+            rightLegIK.weight = 1f;
+            leftLegIK.weight = 0f;
+            rand = 0;
+        }
+
+        Transform feetBone = rand == 0 ? rightFeetBone : leftFeetBone;
+
+        Transform ikTarget = rand == 0 ? rightLegIKTarget : leftLegIKTarget;
+
+        kickProjectTileScript.InitializeKickProjectile(kickAttackObject, targetPos, playerTransform, ikTarget, feetBone);
+
+        kickProjectTileScript.OnKickDestroyed += () =>
+        {
+            rightLegIK.weight = 0f;
+            leftLegIK.weight = 0f;
+        };
 
         dischargeKickAmt = 0;
         OnKickChargedUpdated?.Invoke(dischargeKickAmt);
         rangeKickDischargeAmt = 0;
+        initiateKickAttackHold = false;
+        kickCooldownTimer = kickAttackObject.attackCooldown;
     }
 
     private void HandlePunchAttack()
     {
-        Debug.Log("PUNCH! LAUNCHED!");
+        Debug.Log($"{dischargePunchAmt} is the discharge punch amount");
 
         GameObject fistPrefab = Instantiate(punchAttackGameObject, originPunchAttack.position, cam.rotation);
         FistProjectile fistProjectTileScript = fistPrefab.GetComponent<FistProjectile>();
 
         Vector3 targetPos = cam.position + (rangePunchDischargeAmt * cam.forward);
 
-        fistProjectTileScript.InitializeFistProjectile(punchAttackObject, targetPos, playerTransform);
+        int rand = UnityEngine.Random.Range(0, 2);
+
+        if (dischargePunchAmt <= 5f)
+        {
+            playerAnimationScript.SetAttacking(true);
+            if (rand == 0)
+            {
+                animationScript.ChangeAnimation("luffy_attack_01", .01f); // right hand
+                rightHandIK.weight = 1f;
+                leftHandIK.weight = 0f;
+            }
+            else
+            {
+                animationScript.ChangeAnimation("luffy_attack_02", .01f); // left hand
+                rightHandIK.weight = 0f;
+                leftHandIK.weight = 1f;
+            }
+        }
+        else
+        {
+            playerAnimationScript.SetAttacking(true);
+            animationScript.ChangeAnimation("luffy_releaseAttack", .01f);
+            rightHandIK.weight = 1f;
+            leftHandIK.weight = 0f;
+            rand = 0;
+        }
+
+        Transform palmBone = rand == 0 ? rightPalmArmBone : leftPalmArmBone; // the bone that stretch
+
+        Transform ikTarget = rand == 0 ? rightHandIKTarget : leftHandIKTarget;
+
+        fistProjectTileScript.InitializeFistProjectile(punchAttackObject, targetPos, playerTransform, ikTarget, palmBone);
+
+        fistProjectTileScript.OnFistDestroyed += () =>
+        {
+            rightHandIK.weight = 0f;
+            leftHandIK.weight = 0f;
+        };
 
         dischargePunchAmt = 0;
         OnFistChargedUpdated?.Invoke(dischargePunchAmt);
         rangePunchDischargeAmt = 0;
+        initiatePunchAttackHold = false;
+        punchCooldownTimer = punchAttackObject.attackCooldown;
     }
+
+
+
 
 }

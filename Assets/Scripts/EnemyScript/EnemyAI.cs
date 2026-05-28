@@ -36,7 +36,7 @@ public abstract class EnemyAI : MonoBehaviour
 
     private void Awake()
     {
-        player = GameObject.Find("luffy-model (Player)").transform;
+        player = GameObject.Find("luffy-test-backup").transform;
         agent = GetComponent<NavMeshAgent>();
         animationScript = GetComponent<AnimationScript>();
     }

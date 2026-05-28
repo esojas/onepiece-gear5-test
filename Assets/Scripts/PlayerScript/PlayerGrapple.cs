@@ -1,6 +1,7 @@
 using System;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 public class PlayerGrapple : MonoBehaviour
 {
@@ -34,9 +35,18 @@ public class PlayerGrapple : MonoBehaviour
     private bool grappledCloserPressed = false;
     private bool grappledFurtherPressed = false;
     private Rigidbody rb;
+    // For the hand visual
+    private PlayerAnimationScript playerAnimationScript;
+    private AnimationScript animationScript;
+    private bool initiateChargedHold = false;
+    [SerializeField] private Transform handMesh;
+    [SerializeField] private ChainIKConstraint rightHandIK;
+    private Transform rightHandIKTarget;
 
     private void Awake()
     {
+        playerAnimationScript = GetComponent<PlayerAnimationScript>();
+        animationScript = GetComponent<AnimationScript>();
         lineRenderer = GetComponent<LineRenderer>();
         playerGameObject = gameObject;
         playerInput = GetComponent<PlayerInput>();
@@ -80,21 +90,38 @@ public class PlayerGrapple : MonoBehaviour
             rangeDischarge = Mathf.Clamp(amtDischarge, 0, maximumDischargeAmount);
 
             OnChargedUpdated?.Invoke(amtDischarge);
+
+            HanldeChargingAnimation();
         }
+    }
+
+    private void HanldeChargingAnimation()
+    {
+        if (!initiateChargedHold)
+        {
+            initiateChargedHold = true;
+            playerAnimationScript.SetAttacking(true);
+            animationScript.ChangeAnimation("luffy_initiateChargingAttack", .2f);
+        }
+
     }
 
     private void ShotGrapple(float amtDischargeGiven)
     {
+        playerAnimationScript.SetAttacking(true);
+        animationScript.ChangeAnimation("luffy_releaseAttack", .01f);
         // add a code that sends a message to player movement script
 
         Debug.Log($"The force discharge is {amtDischargeGiven}");
         RaycastHit hit;
         if (Physics.Raycast(cam.position, cam.forward,out hit, amtDischargeGiven, whatIsGrappable))
         {
+            rightHandIK.weight = 1f;
             isGrappling = true;
             IsGrappling?.Invoke();
             
             grapplePoint = hit.point;
+
             joint = playerGameObject.AddComponent<SpringJoint>();
             joint.autoConfigureConnectedAnchor = false;
             joint.connectedAnchor = grapplePoint;
@@ -114,6 +141,7 @@ public class PlayerGrapple : MonoBehaviour
         amtDischarge = 0;
         OnChargedUpdated?.Invoke(amtDischarge);
         rangeDischarge = 0;
+        initiateChargedHold = false; 
     }
 
     private void DrawLine()
@@ -126,6 +154,7 @@ public class PlayerGrapple : MonoBehaviour
 
     private void CancelledGrapple()
     {
+        rightHandIK.weight = 0f;
         isGrappling = false;
         CancelledGrappling?.Invoke();
         lineRenderer.positionCount = 0;
@@ -135,7 +164,6 @@ public class PlayerGrapple : MonoBehaviour
     private void ReleasedGrappleHold()
     {
         isHolding = false;
-        //ReleasedHoldGrappling?.Invoke();
         if (!isHolding) ShotGrapple(rangeDischarge);
     }
 
@@ -174,13 +202,25 @@ public class PlayerGrapple : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        rightHandIK = GameObject.Find("Right Hand IK").GetComponent<ChainIKConstraint>();
+        rightHandIKTarget = rightHandIK.transform.GetChild(0);
+        handMesh = GameObject.Find("DEF-hand.R").transform;
+        rightHandIK.weight = 0f;
+    }
+
+    private void LateUpdate()
+    {
+        if (!isGrappling) return;
+
+        handMesh.position = grapplePoint;
+        rightHandIKTarget.position = grapplePoint; // Put arm on hit point
+        //handMesh.LookAt(grapplePoint);
     }
 
     // Update is called once per frame
     void Update()
     {
-        DrawLine();
+        //DrawLine();
         ChargedGrapple();
         HandleGrappledCloser();
         HandleGrappledFurther();

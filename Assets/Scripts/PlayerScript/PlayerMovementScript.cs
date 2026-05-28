@@ -125,7 +125,11 @@ public class PlayerMovementScript : MonoBehaviour
         if (canFly)
         {
             if (flyTimerCoroutine != null) StopCoroutine(flyTimerCoroutine);
-            if (momentumCoroutine != null) StopCoroutine(momentumCoroutine);
+            if (momentumCoroutine != null)
+            {
+                StopCoroutine(momentumCoroutine);
+                interpolateMovementSpeed = fastInterpolateSpeed; // reset speed
+            }
 
             toggleFly = !toggleFly;
             rb.useGravity = !rb.useGravity;
@@ -196,7 +200,7 @@ public class PlayerMovementScript : MonoBehaviour
     {
         if (toggleFly && spacedHold)
         {
-            rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
+            rb.linearVelocity = new Vector3(0, jumpForce+1.5f, 0);
         }
     }
 
