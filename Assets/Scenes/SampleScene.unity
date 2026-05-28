@@ -15828,6 +15828,7 @@ GameObject:
   - component: {fileID: 2062946444}
   - component: {fileID: 2062946443}
   - component: {fileID: 2062946447}
+  - component: {fileID: 2062946448}
   m_Layer: 3
   m_Name: Plane
   m_TagString: Untagged
@@ -15954,8 +15955,8 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0.17916666
     - serializedVersion: 3
-      time: 0.123041816
-      value: 0.4543287
+      time: 0.22288007
+      value: 0.15921608
       inSlope: -0.28587916
       outSlope: -0.28587916
       tangentMode: 0
@@ -15992,9 +15993,23 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  radius: 1
-  amplitude: 0.05
+  radius: 2
+  amplitude: 0.2
   totalTime: 1
+--- !u!114 &2062946448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2062946442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12557f23103af0446a078b74943e0959, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DensePlane
+  subdivisions: 100
+  size: 10
 --- !u!1 &2090036533
 GameObject:
   m_ObjectHideFlags: 0

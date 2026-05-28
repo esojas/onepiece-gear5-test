@@ -40,7 +40,7 @@ public class BounceReceiver : MonoBehaviour
             return;
         }
 
-        material.SetVector("_TargetPosition", position);
+        material.SetVector("_Target_Position", position);
         material.SetVector("_Direction", direction);
         material.SetFloat("_Radius", radius);
         material.SetFloat("_Amplitude", amplitude);

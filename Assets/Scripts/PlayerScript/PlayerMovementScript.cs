@@ -77,6 +77,12 @@ public class PlayerMovementScript : MonoBehaviour
 
     private void Update()
     {
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            BounceReceiver b = FindFirstObjectByType<BounceReceiver>();
+            b.Bounce(transform.position, Vector3.up);
+        }
         if (!isDrawing) // Make it so that the model doesnt also rotate during the drawing mode.
         {
             HandleRotation();

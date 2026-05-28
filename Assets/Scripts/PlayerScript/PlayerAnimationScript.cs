@@ -77,11 +77,6 @@ public class PlayerAnimationScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            BounceReceiver b = FindObjectOfType<BounceReceiver>();
-            b.Bounce(transform.position, Vector3.up);
-        }
         CheckAnimation();
     }
 }
