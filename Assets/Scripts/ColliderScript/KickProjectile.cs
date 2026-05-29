@@ -19,13 +19,14 @@ public class KickProjectile : MonoBehaviour
     private Transform feetMesh;
     public event Action OnKickDestroyed;
 
-    public void InitializeKickProjectile(MeeleeAttack playerAttackData, Vector3 maxPos, Transform playerPos, Transform feetIKTarget, Transform feet)
+    public void InitializeKickProjectile(MeeleeAttack playerAttackData, Vector3 maxPos, Transform playerPos, Transform feetIKTarget, Transform feet, bool isGiant = false)
     {
         attackPlayerObject = playerAttackData;
         maxPositionDestination = maxPos;
         playerPositionDestination = playerPos;
         objectIsInitilize = true;
-        dmgAmount = attackPlayerObject.attackAmt;
+
+        dmgAmount = isGiant ? attackPlayerObject.attackGiantSize : attackPlayerObject.attackAmt;
 
         float distanceTravelled = Vector3.Distance(playerPos.position, maxPos);
         float t = Mathf.InverseLerp(0f, attackPlayerObject.attackRange, distanceTravelled);

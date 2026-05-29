@@ -46,6 +46,8 @@ public class PlayerAttackScript : MonoBehaviour
     private PlayerAnimationScript playerAnimationScript;
     private AnimationScript animationScript;
 
+    private PlayerGiantScript playerGiantScript;
+
     private void OnPunchAttackPressed()
     {
         if (punchCooldownTimer > 0) return; 
@@ -64,12 +66,15 @@ public class PlayerAttackScript : MonoBehaviour
     private float punchCooldownTimer = 0f;
     private float kickCooldownTimer = 0f;
 
+    private bool isGiant = false;
+
     private void OnEnable()
     {
         playerInput.OnPunchAttackPressed += OnPunchAttackPressed;
         playerInput.OnPunchAttackReleased += OnPunchAttackReleased;
         playerInput.OnKickAttackPressed += OnKickAttackPressed;
         playerInput.OnKickAttackReleased += OnKickAttackReleased;
+        playerGiantScript.OnGiantStateChanged += OnGiantStateChanged;
     }
 
     private void OnDisable()
@@ -78,6 +83,7 @@ public class PlayerAttackScript : MonoBehaviour
         playerInput.OnPunchAttackReleased -= OnPunchAttackReleased;
         playerInput.OnKickAttackPressed -= OnKickAttackPressed;
         playerInput.OnKickAttackReleased -= OnKickAttackReleased;
+        playerGiantScript.OnGiantStateChanged -= OnGiantStateChanged;
     }
 
     private void Awake()
@@ -86,7 +92,7 @@ public class PlayerAttackScript : MonoBehaviour
         playerTransform = transform;
         playerAnimationScript = GetComponent<PlayerAnimationScript>();
         animationScript = GetComponent<AnimationScript>();
-
+        playerGiantScript = GetComponent<PlayerGiantScript>();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -120,6 +126,8 @@ public class PlayerAttackScript : MonoBehaviour
         //leftFeetBone = GameObject.Find("Luffy-DEF-toe.L").transform;
 
     }
+
+    private void OnGiantStateChanged(bool giant) => isGiant = giant;
 
     public float fistMaximumDischarge()
     {
@@ -231,7 +239,7 @@ public class PlayerAttackScript : MonoBehaviour
 
         Transform ikTarget = rand == 0 ? rightLegIKTarget : leftLegIKTarget;
 
-        kickProjectTileScript.InitializeKickProjectile(kickAttackObject, targetPos, playerTransform, ikTarget, feetBone);
+        kickProjectTileScript.InitializeKickProjectile(kickAttackObject, targetPos, playerTransform, ikTarget, feetBone, isGiant);
 
         kickProjectTileScript.OnKickDestroyed += () =>
         {
@@ -286,7 +294,7 @@ public class PlayerAttackScript : MonoBehaviour
 
         Transform ikTarget = rand == 0 ? rightHandIKTarget : leftHandIKTarget;
 
-        fistProjectTileScript.InitializeFistProjectile(punchAttackObject, targetPos, playerTransform, ikTarget, palmBone);
+        fistProjectTileScript.InitializeFistProjectile(punchAttackObject, targetPos, playerTransform, ikTarget, palmBone, isGiant);
 
         fistProjectTileScript.OnFistDestroyed += () =>
         {

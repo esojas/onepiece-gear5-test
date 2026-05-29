@@ -18,6 +18,14 @@ public class ThirdPersonCamera : MonoBehaviour
     private float rotX;
     [SerializeField] private GameObject playerGameObject;
 
+    private float normalDistance;
+    private float desiredDistance;
+    [SerializeField] private float camDistanceLerpSpeed = 5f;
+
+    private float normalVerticalOffset;
+    private float desiredVerticalOffset;
+
+    public float NormalDistance => normalDistance;
 
     private bool camLocked = false;
 
@@ -62,19 +70,13 @@ public class ThirdPersonCamera : MonoBehaviour
     public void SetCameraTarget(Transform playerTarget)
     {
         target = playerTarget;
-        //characterDataScript = target.GetComponent<CharacterData>();
+        cameraPosition = cameraPositionDistance;
+        targetDistance = Vector3.Distance(cameraPosition.position, target.position) * camDistanceMultiplier;
 
-        //Transform cameraPositionFromPlayer = playerTarget.GetComponentInChildren<Transform>();
-
-        //if (characterDataScript != null) 
-        //{
-            cameraPosition = cameraPositionDistance;
-            targetDistance = Vector3.Distance(cameraPosition.position, target.position) * camDistanceMultiplier;
-        //}
-        //else
-        //{
-        //    Debug.LogWarning("CharacterData not found!");
-        //}
+        normalDistance = targetDistance;  
+        desiredDistance = targetDistance;
+        normalVerticalOffset = verticalOffset;
+        desiredVerticalOffset = verticalOffset;
     }
 
     private void ControlCamera()
@@ -88,8 +90,17 @@ public class ThirdPersonCamera : MonoBehaviour
         transform.eulerAngles = new Vector3(-rotX, transform.eulerAngles.y + y, 0);
 
         float heightOffset = verticalOffset;
-        transform.position = target.position + new Vector3(0, heightOffset, 0) - (transform.forward * targetDistance);
+        targetDistance = Mathf.Lerp(targetDistance, desiredDistance, camDistanceLerpSpeed * Time.deltaTime);
+        verticalOffset = Mathf.Lerp(verticalOffset, desiredVerticalOffset, camDistanceLerpSpeed * Time.deltaTime);
+        transform.position = target.position + new Vector3(0, verticalOffset, 0) - (transform.forward * targetDistance);
+
     }
+
+    public void SetCameraVerticalOffset(float offset) => desiredVerticalOffset = normalVerticalOffset + offset;
+    public void ResetCameraVerticalOffset() => desiredVerticalOffset = normalVerticalOffset;
+
+    public void SetCameraDistance(float newDistance) => desiredDistance = newDistance;
+    public void ResetCameraDistance() => desiredDistance = normalDistance;
 
     public void DoFOV(float endValue)
     {

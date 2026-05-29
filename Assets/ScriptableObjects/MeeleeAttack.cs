@@ -4,6 +4,7 @@ using UnityEngine;
 public class MeeleeAttack : ScriptableObject
 {
     public float attackAmt;
+    public float attackGiantSize;
     public float attackSpeed;
     public float attackRange;
     public float attackKnockback;

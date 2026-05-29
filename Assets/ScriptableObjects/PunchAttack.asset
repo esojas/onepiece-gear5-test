@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: PunchAttack
   m_EditorClassIdentifier: Assembly-CSharp::MeeleeAttack
   attackAmt: 2
+  attackGiantSize: 6
   attackSpeed: 30
   attackRange: 50
   attackKnockback: 4

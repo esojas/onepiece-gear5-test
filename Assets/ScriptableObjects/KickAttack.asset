@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: KickAttack
   m_EditorClassIdentifier: Assembly-CSharp::MeeleeAttack
   attackAmt: 4
+  attackGiantSize: 10
   attackSpeed: 30
   attackRange: 80
   attackKnockback: 6

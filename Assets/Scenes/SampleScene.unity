@@ -1782,6 +1782,7 @@ MonoBehaviour:
   minTurnAngle: -90
   maxTurnAngle: 30
   playerGameObject: {fileID: 0}
+  camDistanceLerpSpeed: 5
 --- !u!1 &335643979
 GameObject:
   m_ObjectHideFlags: 0
@@ -7007,7 +7008,10 @@ MonoBehaviour:
   knockback: 3.5
   smokePos: {fileID: 124969451}
   smokeParticle: {fileID: 8625558772264013393, guid: ad119718b512dd94b8c34866548519e6, type: 3}
-  camPostion: {fileID: 0}
+  giantCamDistanceMultiplier: 1.5
+  giantCamVerticalOffset: 2
+  gear5SmokeParticle: {fileID: 0}
+  giantParticleRadius: 2.5
 --- !u!114 &988544239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7061,6 +7065,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 231872571}
     m_Modifications:
+    - target: {fileID: 6897874001733603336, guid: 25a95bfc3ef36404b816aafd84d1f105, type: 3}
+      propertyPath: ShapeModule.donutRadius
+      value: 0.11
+      objectReference: {fileID: 0}
+    - target: {fileID: 6897874001733603336, guid: 25a95bfc3ef36404b816aafd84d1f105, type: 3}
+      propertyPath: ShapeModule.radius.value
+      value: 1.53
+      objectReference: {fileID: 0}
+    - target: {fileID: 6897874001733603336, guid: 25a95bfc3ef36404b816aafd84d1f105, type: 3}
+      propertyPath: EmissionModule.rateOverTime.scalar
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 6897874001733603336, guid: 25a95bfc3ef36404b816aafd84d1f105, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.a
+      value: 0.1764706
+      objectReference: {fileID: 0}
+    - target: {fileID: 6897874001733603336, guid: 25a95bfc3ef36404b816aafd84d1f105, type: 3}
+      propertyPath: InitialModule.startColor.minColor.a
+      value: 0.31764707
+      objectReference: {fileID: 0}
     - target: {fileID: 8043016352909558816, guid: 25a95bfc3ef36404b816aafd84d1f105, type: 3}
       propertyPath: m_Name
       value: Gear5SmokeEffect
@@ -7113,6 +7137,11 @@ PrefabInstance:
 --- !u!4 &1015150486 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8913112454624015134, guid: 25a95bfc3ef36404b816aafd84d1f105, type: 3}
+  m_PrefabInstance: {fileID: 1015150485}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &1015150488 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 6897874001733603336, guid: 25a95bfc3ef36404b816aafd84d1f105, type: 3}
   m_PrefabInstance: {fileID: 1015150485}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1044781057
@@ -18117,7 +18146,10 @@ MonoBehaviour:
   knockback: 3.5
   smokePos: {fileID: 346751944}
   smokeParticle: {fileID: 8625558772264013393, guid: ad119718b512dd94b8c34866548519e6, type: 3}
-  camPostion: {fileID: 0}
+  giantCamDistanceMultiplier: 1.5
+  giantCamVerticalOffset: 2
+  gear5SmokeParticle: {fileID: 0}
+  giantParticleRadius: 2.5
 --- !u!114 &919132148962719370
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26384,12 +26416,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerGiantScript
   sizeMultiplier: 4
   transformSpeed: 1
-  giantDuration: 4
-  giantCooldown: 10
+  giantDuration: 6
+  giantCooldown: 30
   knockback: 3.5
   smokePos: {fileID: 1322213348}
   smokeParticle: {fileID: 8625558772264013393, guid: ad119718b512dd94b8c34866548519e6, type: 3}
-  camPostion: {fileID: 0}
+  giantCamDistanceMultiplier: 1.5
+  giantCamVerticalOffset: 2
+  gear5SmokeParticle: {fileID: 1015150488}
+  giantParticleRadius: 4.5
 --- !u!114 &6450063699937070991
 MonoBehaviour:
   m_ObjectHideFlags: 0

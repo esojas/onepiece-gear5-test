@@ -1,3 +1,4 @@
+﻿using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -12,8 +13,12 @@ public class PlayerGiantScript : MonoBehaviour
     [SerializeField] private float knockback; // the knockback when going back to normal size
     [SerializeField] GameObject smokePos;
     [SerializeField] GameObject smokeParticle;
-    [SerializeField] private Transform camPostion;
+    [SerializeField] private float giantCamDistanceMultiplier = 1.5f; // tune this down from sizeMultiplier
+    [SerializeField] private float giantCamVerticalOffset = 2f;
+    [SerializeField] private ParticleSystem gear5SmokeParticle;
+    [SerializeField] private float giantParticleRadius = 2.5f;
 
+    private float normalParticleRadius;
     private GameObject activeSmokeInstance;
     private Vector3 normalSize;
     private PlayerInput playerInputScript;
@@ -22,6 +27,7 @@ public class PlayerGiantScript : MonoBehaviour
     private bool giantTimerStart = false;
     private Vector3 targetSize;
     private Rigidbody rb;
+    public event Action<bool> OnGiantStateChanged;
 
     private void TransformToBig()
     {
@@ -31,6 +37,7 @@ public class PlayerGiantScript : MonoBehaviour
 
             if (transform.localScale == targetSize && !giantTimerStart)
             {
+                OnGiantStateChanged?.Invoke(true);
                 giantTimerStart = true;
                 StartCoroutine(GiantAbilityDuration());
             }
@@ -51,9 +58,9 @@ public class PlayerGiantScript : MonoBehaviour
             transform.localScale = Vector3.MoveTowards(transform.localScale, normalSize, transformSpeed * Time.deltaTime);
             rb.AddForce(-transform.forward * knockback, ForceMode.Impulse);
 
-
             if (transform.localScale == normalSize)
             {
+                OnGiantStateChanged?.Invoke(true);
                 ParticleSystem ps = activeSmokeInstance.GetComponent<ParticleSystem>();
                 ps.Stop(true, ParticleSystemStopBehavior.StopEmitting);
                 activeSmokeInstance = null;
@@ -69,8 +76,19 @@ public class PlayerGiantScript : MonoBehaviour
             targetSize = new Vector3(1, 1, 1) * sizeMultiplier;
 
             playerIsBig = true;
+
+            ThirdPersonCamera.Instance?.SetCameraDistance(ThirdPersonCamera.Instance.NormalDistance * giantCamDistanceMultiplier);
+            ThirdPersonCamera.Instance?.SetCameraVerticalOffset(giantCamVerticalOffset);
+
+            if (gear5SmokeParticle != null)
+            {
+                var shape = gear5SmokeParticle.shape;
+                shape.radius = giantParticleRadius;
+            }
         }
     }
+
+
 
     private IEnumerator GiantAbilityDuration()
     {
@@ -82,6 +100,16 @@ public class PlayerGiantScript : MonoBehaviour
     {
         isGiantCooldown = true;
         playerIsBig = false;
+        ThirdPersonCamera.Instance?.ResetCameraDistance();
+        ThirdPersonCamera.Instance?.ResetCameraVerticalOffset();
+
+        if (gear5SmokeParticle != null)
+        {
+            var shape = gear5SmokeParticle.shape;
+            shape.radius = normalParticleRadius;
+        }
+
+
         yield return new WaitForSeconds(giantCooldown);
         giantTimerStart = false;
         isGiantCooldown = false;
@@ -101,6 +129,8 @@ public class PlayerGiantScript : MonoBehaviour
         playerInputScript = GetComponent<PlayerInput>();
         normalSize = transform.localScale;
         rb = GetComponent<Rigidbody>();
+        if (gear5SmokeParticle != null)
+            normalParticleRadius = gear5SmokeParticle.shape.radius;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

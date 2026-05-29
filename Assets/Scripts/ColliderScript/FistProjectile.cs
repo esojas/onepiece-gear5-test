@@ -21,13 +21,13 @@ public class FistProjectile : MonoBehaviour
     private Transform handMesh;
     public event Action OnFistDestroyed;
 
-    public void InitializeFistProjectile(MeeleeAttack playerAttackData, Vector3 maxPos, Transform playerPos, Transform handIKTarget, Transform palmArm)
+    public void InitializeFistProjectile(MeeleeAttack playerAttackData, Vector3 maxPos, Transform playerPos, Transform handIKTarget, Transform palmArm, bool isGiant = false)
     {
         attackPlayerObject = playerAttackData;
         maxPositionDestination = maxPos;
         playerPositionDestination = playerPos;
         objectIsInitilize = true;
-        dmgAmount = attackPlayerObject.attackAmt;
+        dmgAmount = isGiant ? attackPlayerObject.attackGiantSize : attackPlayerObject.attackAmt;
 
         float distanceTravelled = Vector3.Distance(playerPos.position, maxPos);
         float t = Mathf.InverseLerp(0f, attackPlayerObject.attackRange, distanceTravelled);
