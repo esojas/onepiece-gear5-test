@@ -3,20 +3,21 @@ using UnityEngine;
 
 public class PlayerFootstep : MonoBehaviour
 {
-
+    [SerializeField] private LayerMask groundLayer, wallLayer;
+    [SerializeField] private float minMoveSpeed = 0.1f;
+    [SerializeField] private Rigidbody rb;
 
     private void OnTriggerEnter(Collider other)
     {
-        //TriggerWaveAt(transform.position);
+        if (rb.linearVelocity.magnitude < minMoveSpeed) return;
+
+        int otherMask = 1 << other.gameObject.layer;
+        if ((otherMask & groundLayer) != 0 || (otherMask & wallLayer) != 0)
+        {
+            BounceReceiver receiver = other.GetComponent<BounceReceiver>();
+            if (receiver == null) return;
+            receiver.Bounce(transform.position, Vector3.up);
+        }
     }
 
-    //private void TriggerWaveAt(Vector3 footPosition)
-    //{
-    //    // Raycast down to find the exact surface point
-    //    if (Physics.Raycast(footPosition + Vector3.up * 0.1f, Vector3.down, out RaycastHit hit, 0.5f))
-    //    {
-    //        var surface = hit.collider.GetComponent<BounceReceiver>();
-    //        surface?.TriggerWave(hit.point);
-    //    }
-    //}
 }

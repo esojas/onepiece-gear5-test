@@ -13,15 +13,15 @@ public class PlayerAttackScript : MonoBehaviour
     [SerializeField] private ChainIKConstraint leftHandIK;
     private Transform rightHandIKTarget;
     private Transform leftHandIKTarget;
-    private Transform rightPalmArmBone;
-    private Transform leftPalmArmBone;
+    [SerializeField] private Transform rightPalmArmBone;
+    [SerializeField] private Transform leftPalmArmBone;
 
     [SerializeField] private ChainIKConstraint rightLegIK;
     [SerializeField] private ChainIKConstraint leftLegIK;
     private Transform rightLegIKTarget;
     private Transform leftLegIKTarget;
-    private Transform rightFeetBone;
-    private Transform leftFeetBone;
+    [SerializeField] private Transform rightFeetBone;
+    [SerializeField] private Transform leftFeetBone;
 
     private PlayerInput playerInput;
 
@@ -104,8 +104,8 @@ public class PlayerAttackScript : MonoBehaviour
         rightHandIKTarget = rightHandIK.transform.GetChild(0); 
         leftHandIKTarget = leftHandIK.transform.GetChild(0);
 
-        rightPalmArmBone = GameObject.Find("DEF-hand.R").transform;
-        leftPalmArmBone = GameObject.Find("DEF-hand.L").transform;
+        //rightPalmArmBone = GameObject.Find("Luffy-DEF-hand.R").transform;
+        //leftPalmArmBone = GameObject.Find("Luffy-DEF-hand.L").transform;
         // Legs
         rightLegIK = GameObject.Find("Right Leg IK").GetComponent<ChainIKConstraint>();
         leftLegIK = GameObject.Find("Left Leg IK").GetComponent<ChainIKConstraint>();
@@ -116,8 +116,8 @@ public class PlayerAttackScript : MonoBehaviour
         rightLegIKTarget = rightLegIK.transform.GetChild(0);
         leftLegIKTarget = leftLegIK.transform.GetChild(0);
 
-        rightFeetBone = GameObject.Find("DEF-toe.R").transform;
-        leftFeetBone = GameObject.Find("DEF-toe.L").transform;
+        //rightFeetBone = GameObject.Find("Luffy-DEF-toe.R").transform;
+        //leftFeetBone = GameObject.Find("Luffy-DEF-toe.L").transform;
 
     }
 

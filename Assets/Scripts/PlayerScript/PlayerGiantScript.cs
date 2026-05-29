@@ -12,6 +12,7 @@ public class PlayerGiantScript : MonoBehaviour
     [SerializeField] private float knockback; // the knockback when going back to normal size
     [SerializeField] GameObject smokePos;
     [SerializeField] GameObject smokeParticle;
+    [SerializeField] private Transform camPostion;
 
     private GameObject activeSmokeInstance;
     private Vector3 normalSize;

@@ -204,7 +204,7 @@ public class PlayerGrapple : MonoBehaviour
     {
         rightHandIK = GameObject.Find("Right Hand IK").GetComponent<ChainIKConstraint>();
         rightHandIKTarget = rightHandIK.transform.GetChild(0);
-        handMesh = GameObject.Find("DEF-hand.R").transform;
+        //handMesh = GameObject.Find("Luffy-DEF-hand.R").transform;
         rightHandIK.weight = 0f;
     }
 
