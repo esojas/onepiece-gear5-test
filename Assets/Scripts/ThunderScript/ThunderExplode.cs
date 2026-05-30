@@ -1,3 +1,4 @@
+using SmallHedge.SoundManager;
 using UnityEngine;
 
 public class ThunderExplode : MonoBehaviour
@@ -30,8 +31,15 @@ public class ThunderExplode : MonoBehaviour
     private void OnThunderExplode(Vector3 explodePos)
     {
         Instantiate(thunderExplodeVFXPrefab, explodePos, Quaternion.identity);
-    
+
+        PlayLightningSound();
+
         Destroy(gameObject, colliderLifetime); // destroy the collider afterward
+    }
+
+    public void PlayLightningSound()
+    {
+        SoundManager.PlaySoundAtPosition(SoundType.Thunder, transform.position, .4f, 10f);
     }
 
     void OnDrawGizmosSelected()

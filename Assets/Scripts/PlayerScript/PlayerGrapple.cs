@@ -1,3 +1,4 @@
+using SmallHedge.SoundManager;
 using System;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -42,6 +43,7 @@ public class PlayerGrapple : MonoBehaviour
     [SerializeField] private Transform handMesh;
     [SerializeField] private ChainIKConstraint rightHandIK;
     private Transform rightHandIKTarget;
+    private AudioSource audioSource;
 
     private void Awake()
     {
@@ -51,6 +53,7 @@ public class PlayerGrapple : MonoBehaviour
         playerGameObject = gameObject;
         playerInput = GetComponent<PlayerInput>();
         rb = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
         //playerMovementScript = GetComponent<PlayerMovementScript>();
     }
 
@@ -122,6 +125,10 @@ public class PlayerGrapple : MonoBehaviour
             
             grapplePoint = hit.point;
 
+            PlayerShotGrappleSound();
+
+            PlayerGrappleSound();
+
             joint = playerGameObject.AddComponent<SpringJoint>();
             joint.autoConfigureConnectedAnchor = false;
             joint.connectedAnchor = grapplePoint;
@@ -144,6 +151,11 @@ public class PlayerGrapple : MonoBehaviour
         initiateChargedHold = false; 
     }
 
+    public void PlayerShotGrappleSound()
+    {
+        SoundManager.PlaySound(SoundType.ThrowArm, null, .4f);
+    }
+
     private void DrawLine()
     {
         if (!joint) return;
@@ -156,6 +168,7 @@ public class PlayerGrapple : MonoBehaviour
     {
         rightHandIK.weight = 0f;
         isGrappling = false;
+        StopGrappleSound();
         CancelledGrappling?.Invoke();
         lineRenderer.positionCount = 0;
         Destroy(joint);
@@ -199,12 +212,21 @@ public class PlayerGrapple : MonoBehaviour
         }
     }
 
+    public void PlayerGrappleSound()
+    {
+        SoundManager.PlayLoopingSound(SoundType.Grapple, audioSource, .4f);
+    }
+
+    public void StopGrappleSound()
+    {
+        SoundManager.StopLoopingSound(audioSource);
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rightHandIK = GameObject.Find("Right Hand IK").GetComponent<ChainIKConstraint>();
         rightHandIKTarget = rightHandIK.transform.GetChild(0);
-        //handMesh = GameObject.Find("Luffy-DEF-hand.R").transform;
         rightHandIK.weight = 0f;
     }
 
@@ -214,7 +236,6 @@ public class PlayerGrapple : MonoBehaviour
 
         handMesh.position = grapplePoint;
         rightHandIKTarget.position = grapplePoint; // Put arm on hit point
-        //handMesh.LookAt(grapplePoint);
     }
 
     // Update is called once per frame

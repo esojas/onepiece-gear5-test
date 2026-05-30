@@ -1,3 +1,4 @@
+using SmallHedge.SoundManager;
 using System.Collections;
 using Unity.Burst.CompilerServices;
 using UnityEngine;
@@ -9,7 +10,6 @@ public class ThunderSpawnScript : MonoBehaviour
     private bool lightningCanSpawn = false;
 
     [SerializeField] private GameObject lightningPrefab;
-    //private Coroutine lightningIntervalCoroutine;
 
     private void SpawnLightning()
     {
@@ -19,6 +19,8 @@ public class ThunderSpawnScript : MonoBehaviour
         Vector3 randomSpawnPos = new Vector3(randomX,randomY,randomZ);
         GameObject lightningGameObject = Instantiate(lightningPrefab,randomSpawnPos,Quaternion.Euler(-90,0,0));
 
+        PlayLightningSound(randomSpawnPos);
+
         ParticleSystem lightningParticleSystem = lightningGameObject.GetComponentInChildren<ParticleSystem>();
 
         float lightningVFXLifetime = lightningParticleSystem ? lightningParticleSystem.main.duration : 5; // the default is 5
@@ -26,6 +28,11 @@ public class ThunderSpawnScript : MonoBehaviour
         float lightningVFXStartLifetime = lightningParticleSystem.main.startLifetime.constant;
 
         Destroy(lightningGameObject, lightningVFXLifetime + lightningVFXStartLifetime);
+    }
+
+    public void PlayLightningSound(Vector3 lightningRodSpawn)
+    {
+        SoundManager.PlaySoundAtPosition(SoundType.Thunder, new Vector3(lightningRodSpawn.x, 0, lightningRodSpawn.z), .4f, 20f);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

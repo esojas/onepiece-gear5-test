@@ -1,3 +1,4 @@
+using SmallHedge.SoundManager;
 using UnityEngine;
 
 public class MeleeEnemyScript : EnemyAI
@@ -10,7 +11,13 @@ public class MeleeEnemyScript : EnemyAI
         isAttacking = true;
         animationScript.ChangeAnimation("enemy_swordAttack", .1f);
         pendingDamage = attackDmg;
-}
+        PlayMeleeSound();
+    }
+
+    public void PlayMeleeSound()
+    {
+        SoundManager.PlaySoundAtPosition(SoundType.EnemyMelee, transform.position, .4f, 10f);
+    }
 
     public void SpawnMeleeCollider()
     {

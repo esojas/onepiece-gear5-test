@@ -1,3 +1,4 @@
+using SmallHedge.SoundManager;
 using System;
 using UnityEngine;
 using UnityEngine.Animations;
@@ -47,8 +48,14 @@ public class LongRangeEnemyScript: EnemyAI
         isAttacking = false;
     }
 
+    public void PlayShootingSound()
+    {
+        SoundManager.PlaySoundAtPosition(SoundType.EnemyShoot, transform.position, .4f, 10f);
+    }
+
     public void SpawnBulletCollider()
     {
+        PlayShootingSound();
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
         EnemyBulletColliderScript bulletScript = bullet.GetComponent<EnemyBulletColliderScript>();
         bulletScript.InitializedEnemyBulletColliderScript(pendingDamage);

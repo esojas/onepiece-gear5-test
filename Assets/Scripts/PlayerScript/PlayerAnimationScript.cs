@@ -50,7 +50,7 @@ public class PlayerAnimationScript : MonoBehaviour
             return;
         }
 
-        if (sprinting)
+        if (sprinting && rb.linearVelocity.magnitude > 0.1f)
         {
             animationScript.ChangeAnimation("luffy_run", .1f);
         }

@@ -1,3 +1,4 @@
+using SmallHedge.SoundManager;
 using System;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -86,13 +87,20 @@ public class FistProjectile : MonoBehaviour
         {
             EnemyHealth enemyHealthScript = other.GetComponent<EnemyHealth>();
 
+            PlayFistHitSound();
+
             Vector3 direction = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
             Vector3 finalForce = direction * knockbackAmount;
 
             enemyHealthScript.TakeDamage(dmgAmount + damageBonus, finalForce);
 
-            Debug.LogWarning(dmgAmount + damageBonus);
+            //Debug.LogWarning(dmgAmount + damageBonus);
         }
+    }
+
+    private void PlayFistHitSound()
+    {
+        SoundManager.PlaySound(SoundType.Punch, null, .4f);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

@@ -1,3 +1,4 @@
+using SmallHedge.SoundManager;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -28,7 +29,14 @@ public class EnemyHealth : MonoBehaviour
 
         enemyHealthEvent?.Invoke(enemyCurrentHealth);
 
+        EnemyTakeDamageSound();
+
         if (enemyCurrentHealth == 0f) Death();
+    }
+
+    public void EnemyTakeDamageSound()
+    {
+        SoundManager.PlaySound(SoundType.Punch, null, .4f);
     }
 
     private IEnumerator KnockbackPause(Vector3 force)

@@ -1,3 +1,4 @@
+using SmallHedge.SoundManager;
 using System;
 using UnityEditor;
 using UnityEngine;
@@ -79,11 +80,18 @@ public class KickProjectile : MonoBehaviour
         {
             EnemyHealth enemyHealthScript = other.GetComponent<EnemyHealth>();
 
+            PlayKickHitSound();
+
             Vector3 direction = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
             Vector3 finalForce = direction * knockbackAmount;
 
             enemyHealthScript.TakeDamage(dmgAmount+ damageBonus, finalForce);
         }
+    }
+
+    private void PlayKickHitSound()
+    {
+        SoundManager.PlaySound(SoundType.Kick, null, .4f);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

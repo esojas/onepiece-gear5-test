@@ -1,3 +1,4 @@
+using SmallHedge.SoundManager;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -16,6 +17,7 @@ public class PlayerMovementScript : MonoBehaviour
     [SerializeField] private float flightDuration = 7f;
     [SerializeField] private float flightCooldown = 7f;
     [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private LayerMask platformLayer;
     [SerializeField] private float distanceFromGround = .5f;
 
     private bool toggleFly = false;
@@ -77,12 +79,6 @@ public class PlayerMovementScript : MonoBehaviour
 
     private void Update()
     {
-
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            BounceReceiver b = FindFirstObjectByType<BounceReceiver>();
-            b.Bounce(transform.position, Vector3.up);
-        }
         if (!isDrawing) // Make it so that the model doesnt also rotate during the drawing mode.
         {
             HandleRotation();
@@ -190,7 +186,9 @@ public class PlayerMovementScript : MonoBehaviour
 
         Debug.DrawRay(feetPosition, Vector3.down * distanceFromGround, Color.red);
 
-        bool isTouchingGround = Physics.SphereCast(feetPosition, 0.3f, Vector3.down, out _, distanceFromGround, groundLayer);
+        LayerMask combinedLayers = groundLayer | platformLayer;
+
+        bool isTouchingGround = Physics.SphereCast(feetPosition, 0.3f, Vector3.down, out _, distanceFromGround, combinedLayers);
 
         if(isTouchingGround) isJumping = false;
 
@@ -307,5 +305,10 @@ public class PlayerMovementScript : MonoBehaviour
         }
 
         interpolateMovementSpeed = fastInterpolateSpeed;
+    }
+
+    public void PlayFootstep()
+    {
+        SoundManager.PlaySound(SoundType.Footstep, null, 0.4f);
     }
 }

@@ -1,0 +1,132 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e9352b1c40d9424fa35c4e37ed69d72, type: 3}
+  m_Name: Sounds SO
+  m_EditorClassIdentifier: Assembly-CSharp::SmallHedge.SoundManager.SoundsSO
+  sounds:
+  - name: Footstep
+    volume: 0.429
+    mixer: {fileID: 0}
+    sounds:
+    - {fileID: 8300000, guid: 1f568411e145cc94da3f574f1203a02e, type: 3}
+    - {fileID: 8300000, guid: 6dd2a58112b1e33419181af0b62a125b, type: 3}
+    - {fileID: 8300000, guid: 1115587aa99c73d448030d5c45ee7bfe, type: 3}
+    - {fileID: 8300000, guid: 6c6a01848a4d8e540884d42608ad5f6e, type: 3}
+    randomizePitch: 1
+    minPitch: 0.666
+    maxPitch: 1.015
+  - name: Punch
+    volume: 0.44
+    mixer: {fileID: 0}
+    sounds:
+    - {fileID: 8300000, guid: 8304e297dccf6df45aa5a606a955374a, type: 3}
+    - {fileID: 8300000, guid: a69b8b4b536cd64408fc73c4414ff0ae, type: 3}
+    - {fileID: 8300000, guid: d33fbf5ef7e14e344940d6e490e27358, type: 3}
+    randomizePitch: 0
+    minPitch: 0
+    maxPitch: 0
+  - name: Kick
+    volume: 0.417
+    mixer: {fileID: 0}
+    sounds:
+    - {fileID: 8300000, guid: 8304e297dccf6df45aa5a606a955374a, type: 3}
+    - {fileID: 8300000, guid: a69b8b4b536cd64408fc73c4414ff0ae, type: 3}
+    - {fileID: 8300000, guid: d33fbf5ef7e14e344940d6e490e27358, type: 3}
+    randomizePitch: 0
+    minPitch: 0
+    maxPitch: 0
+  - name: EnemyMelee
+    volume: 0.42
+    mixer: {fileID: 0}
+    sounds:
+    - {fileID: 8300000, guid: c758aa56c20be10459fca300a3e39e5b, type: 3}
+    - {fileID: 8300000, guid: a68da93cf80418f4e84e2d7c1250d3d2, type: 3}
+    - {fileID: 8300000, guid: 002f07f066349984db6cdad787c8fa47, type: 3}
+    randomizePitch: 0
+    minPitch: 0
+    maxPitch: 0
+  - name: EnemyShoot
+    volume: 0.411
+    mixer: {fileID: 0}
+    sounds:
+    - {fileID: 8300000, guid: 5fc50ba910722594da6df72ac6687313, type: 3}
+    randomizePitch: 0
+    minPitch: 0
+    maxPitch: 0
+  - name: Jump
+    volume: 0.413
+    mixer: {fileID: 0}
+    sounds:
+    - {fileID: 8300000, guid: a6d4d38b5a8bed647a0a15a628916222, type: 3}
+    - {fileID: 8300000, guid: c3681f046eb1d254bbdcf3cc35482fa7, type: 3}
+    randomizePitch: 0
+    minPitch: 0
+    maxPitch: 0
+  - name: Hurt
+    volume: 1
+    mixer: {fileID: 0}
+    sounds:
+    - {fileID: 8300000, guid: 4f30b1488376c1b45abf969ec432ee9b, type: 3}
+    randomizePitch: 0
+    minPitch: 0
+    maxPitch: 0
+  - name: ThrowThunder
+    volume: 0.423
+    mixer: {fileID: 0}
+    sounds:
+    - {fileID: 8300000, guid: 41e29c11a645da84ea7af742a094056e, type: 3}
+    randomizePitch: 0
+    minPitch: 0
+    maxPitch: 0
+  - name: Thunder
+    volume: 0.407
+    mixer: {fileID: 0}
+    sounds:
+    - {fileID: 8300000, guid: de2f884d70b68024592f6609fba45391, type: 3}
+    - {fileID: 8300000, guid: 4a35355007daa40459756b9f81087fd8, type: 3}
+    - {fileID: 8300000, guid: 2e9f52be35cd29f4dba8d1e786c6c701, type: 3}
+    randomizePitch: 0
+    minPitch: 0
+    maxPitch: 0
+  - name: ThunderHold
+    volume: 0.405
+    mixer: {fileID: 0}
+    sounds:
+    - {fileID: 8300000, guid: 272a2f69221e1b84e90e1ab09dd2c7a7, type: 3}
+    randomizePitch: 0
+    minPitch: 0
+    maxPitch: 0
+  - name: Grapple
+    volume: 0.417
+    mixer: {fileID: 0}
+    sounds:
+    - {fileID: 8300000, guid: d943fa18bc994824f8555d54b99e7f10, type: 3}
+    randomizePitch: 0
+    minPitch: 0
+    maxPitch: 0
+  - name: ThrowArm
+    volume: 0.405
+    mixer: {fileID: 0}
+    sounds:
+    - {fileID: 8300000, guid: 00f0f2308f6262744a429350bf36f68f, type: 3}
+    randomizePitch: 0
+    minPitch: 0
+    maxPitch: 0
+  - name: ReturnArm
+    volume: 0.417
+    mixer: {fileID: 0}
+    sounds:
+    - {fileID: 8300000, guid: 32b8b1b96556e504bb392ee7074c5a7d, type: 3}
+    randomizePitch: 0
+    minPitch: 0
+    maxPitch: 0
+  music: []

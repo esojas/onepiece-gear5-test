@@ -1,6 +1,8 @@
+using SmallHedge.SoundManager;
 using System;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.EventSystems;
 
 public class PlayerLightningScript : MonoBehaviour
@@ -22,6 +24,7 @@ public class PlayerLightningScript : MonoBehaviour
     ThunderRodScript thunderRodScript;
     AnimationScript animationScript;
     PlayerAnimationScript playerAnimationScript;
+    AudioSource audioSource;
 
     private void Awake()
     {
@@ -29,6 +32,7 @@ public class PlayerLightningScript : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         playerAnimationScript = GetComponent<PlayerAnimationScript>();
         animationScript = GetComponent<AnimationScript>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void OnEnable()
@@ -64,14 +68,35 @@ public class PlayerLightningScript : MonoBehaviour
 
         rb.constraints = RigidbodyConstraints.FreezePosition;
 
+        PlayHoldLightningSound();
+
         lightningRod = Instantiate(lightningRodPrefab,holdLightningPos);
 
         holdingLightning.Invoke();
     }
 
+    public void PlayHoldLightningSound()
+    {
+        SoundManager.PlayLoopingSound(SoundType.ThunderHold, audioSource, .4f);
+    }
+
+    public void PlayStopLightningSound()
+    {
+        SoundManager.StopLoopingSound(audioSource);
+    }
+
+    public void PlayThrowLightningSound()
+    {
+        SoundManager.PlaySound(SoundType.ThrowThunder);
+    }
+
     private void ThrowLightningRodInput()
     {
         throwLightning?.Invoke();
+
+        PlayStopLightningSound();
+
+        PlayThrowLightningSound();
 
         playerAnimationScript.SetAttacking(true);
 

@@ -1,3 +1,4 @@
+using SmallHedge.SoundManager;
 using System;
 using UnityEngine;
 
@@ -19,17 +20,21 @@ public class PlayerHealthScript : MonoBehaviour
     {
         currentHealth = Mathf.Max(currentHealth - damage, 0f);
 
+        PlayerTakeDamageSound();
+
         OnHealthUpdate?.Invoke(currentHealth);
 
         if (currentHealth == 0f) Die();
     }
 
+    public void PlayerTakeDamageSound()
+    {
+        SoundManager.PlaySound(SoundType.Hurt, null,.4f);
+    }
 
     private void Die()
     {
         Instantiate(deathVFX, transform.position, Quaternion.identity);
-
-
 
         Destroy(gameObject);
     }
